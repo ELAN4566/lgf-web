@@ -1,0 +1,106 @@
+{
+  "_comment": "Wortuhr-Textmatrix. Sprache: Solothurner Dialekt (de-CH-SO). Wortlängen/Reihenfolge sind sprachspezifisch - bei einer anderen Sprache muss dieses File neu erstellt werden.",
+  "language": "de-CH-SO",
+  "indexBase": 1,
+
+  "layout": { "numRows": 12, "numCols": 11 },
+
+  "matrix": [
+    "ESGISCHLZIT",
+    "FÜFAVIERTUP",
+    "QZÄÄPZWÄNZG",
+    "ABVORQHAUBI",
+    "ZUMFÜFIFÜRS",
+    "ESZWÖUFIGOO",
+    "EISDRÜSZWÖI",
+    "ÖUFIZNACHTI",
+    "YSÄCHSIBIER",
+    "SIBNIZVIERI",
+    "ZNÜNISZÄNIV"
+  ],
+
+  "words": [
+    { "id": "WU_STD01",  "row": 7,  "col": 1, "text": "EIS" },
+    { "id": "WU_STD02",  "row": 7,  "col": 8, "text": "ZWÖI" },
+    { "id": "WU_STD03",  "row": 7,  "col": 4, "text": "DRÜ" },
+    { "id": "WU_STD04",  "row": 10, "col": 7, "text": "VIERI" },
+    { "id": "WU_STD05",  "row": 5,  "col": 4, "text": "FÜFI" },
+    { "id": "WU_STD06",  "row": 9,  "col": 2, "text": "SÄCHSI" },
+    { "id": "WU_STD07",  "row": 10, "col": 1, "text": "SIBNI" },
+    { "id": "WU_STD08",  "row": 8,  "col": 7, "text": "ACHTI" },
+    { "id": "WU_STD09",  "row": 11, "col": 2, "text": "NÜNI" },
+    { "id": "WU_STD10",  "row": 11, "col": 7, "text": "ZÄNI" },
+    { "id": "WU_STD11",  "row": 8,  "col": 1, "text": "ÖUFI" },
+    { "id": "WU_STD12",  "row": 6,  "col": 3, "text": "ZWÖUFI" },
+
+    { "id": "WU_MIN05",  "row": 2,  "col": 1, "text": "FÜF" },
+    { "id": "WU_MIN10",  "row": 3,  "col": 2, "text": "ZÄÄ" },
+    { "id": "WU_MIN15",  "row": 2,  "col": 5, "text": "VIERTU" },
+    { "id": "WU_MIN20",  "row": 3,  "col": 6, "text": "ZWÄNZG" },
+    { "id": "WU_MIN30",  "row": 4,  "col": 7, "text": "HAUBI" },
+
+    { "id": "WU_NACH",   "row": 4,  "col": 1, "text": "AB" },
+    { "id": "WU_VOR",    "row": 4,  "col": 3, "text": "VOR" },
+    { "id": "WU_ES_IST", "row": 1,  "col": 1, "text": "ES_ISCH" },
+
+    { "id": "WU_ZEIT",   "row": 1,  "col": 9, "text": "ZIT", "_hidden": true },
+    { "id": "WU_ZUM",    "row": 5,  "col": 1, "text": "ZUM", "_hidden": true },
+    { "id": "WU_GEHEN",  "row": 6,  "col": 9, "text": "GO",  "_hidden": true },
+    { "id": "WU_GEHEN2", "row": 6,  "col": 9, "text": "GOO",  "_hidden": true },
+    { "id": "WU_FUER",   "row": 5,  "col": 8, "text": "FÜR", "_hidden": true },
+    { "id": "WU_FUERS",  "row": 5,  "col": 8, "text": "FÜRS", "_hidden": true },
+    { "id": "WU_EIN",    "row": 6,  "col": 1, "text": "ES",  "_hidden": true },
+    { "id": "WU_BIER",   "row": 9,  "col": 8, "text": "BIER","_hidden": true },
+    { "id": "WU_ZNACHT", "row": 8,  "col": 5, "text": "ZNACHT","_hidden": true },
+    { "id": "WU_ZVIERI", "row": 10, "col": 6, "text": "ZVIERI","_hidden": true },
+    { "id": "WU_ZNUENI", "row": 11, "col": 1, "text": "ZNÜNI","_hidden": true },
+    { "id": "WU_SZAENI", "row": 11, "col": 6, "text": "SZÄNI","_hidden": true }
+  ],
+
+  "secondsDots": [
+    { "id": "WU_SEK00", "row": 12, "col": 1 },
+    { "id": "WU_SEK10", "row": 12, "col": 2 },
+    { "id": "WU_SEK20", "row": 12, "col": 3 },
+    { "id": "WU_SEK30", "row": 12, "col": 4 },
+    { "id": "WU_SEK40", "row": 12, "col": 5 },
+    { "id": "WU_SEK50", "row": 12, "col": 6 }
+  ],
+  "minutesDots": [
+    { "id": "WU_MIN00", "row": 12, "col": 7 },
+    { "id": "WU_MIN01", "row": 12, "col": 8 },
+    { "id": "WU_MIN02", "row": 12, "col": 9 },
+    { "id": "WU_MIN03", "row": 12, "col": 10 },
+    { "id": "WU_MIN04", "row": 12, "col": 11 }
+  ],
+
+  "timeRules": [
+    { "minuteMod5": 0,  "on": ["WU_ES_IST", "STD_CURRENT"] },
+    { "minuteMod5": 5,  "on": ["WU_ES_IST", "WU_MIN05", "WU_NACH", "STD_CURRENT"] },
+    { "minuteMod5": 10, "on": ["WU_ES_IST", "WU_MIN10", "WU_NACH", "STD_CURRENT"] },
+    { "minuteMod5": 15, "on": ["WU_ES_IST", "WU_MIN15", "WU_NACH", "STD_CURRENT"] },
+    { "minuteMod5": 20, "on": ["WU_ES_IST", "WU_MIN20", "WU_NACH", "STD_CURRENT"] },
+    { "minuteMod5": 25, "on": ["WU_ES_IST", "WU_MIN05", "WU_VOR", "WU_MIN30", "STD_NEXT"] },
+    { "minuteMod5": 30, "on": ["WU_ES_IST", "WU_MIN30", "STD_NEXT"] },
+    { "minuteMod5": 35, "on": ["WU_ES_IST", "WU_MIN05", "WU_NACH", "WU_MIN30", "STD_NEXT"] },
+    { "minuteMod5": 40, "on": ["WU_ES_IST", "WU_MIN20", "WU_VOR", "STD_NEXT"] },
+    { "minuteMod5": 45, "on": ["WU_ES_IST", "WU_MIN15", "WU_VOR", "STD_NEXT"] },
+    { "minuteMod5": 50, "on": ["WU_ES_IST", "WU_MIN10", "WU_VOR", "STD_NEXT"] },
+    { "minuteMod5": 55, "on": ["WU_ES_IST", "WU_MIN05", "WU_VOR", "STD_NEXT"] }
+  ],
+
+  "_comment_alarmRules": "Text bei Alarm: enthält die Alarm-Bezeichnung die Trigger-Wörter, werden statt der Zeit die 'on'-Wörter angezeigt. 'triggers' = Liste von Gruppen, ALLE Gruppen müssen zutreffen (UND), innerhalb einer Gruppe genügt EIN Wort (ODER). Vergleich ganzer Wörter, Gross-/Kleinschreibung egal. Treffen mehrere Regeln zu, gewinnt die mit den meisten Gruppen.",
+  "alarmRules": [
+    { "id": "alarmGehen",  "triggers": [["gehen", "goo", "go"]],
+      "on": ["WU_ES_IST", "WU_ZEIT", "WU_ZUM", "WU_GEHEN"] },
+    { "id": "alarmBier",   "triggers": [["bier"]],
+      "on": ["WU_ES_IST", "WU_ZEIT", "WU_FUER", "WU_EIN", "WU_BIER"] },
+    { "id": "alarm11Bier", "triggers": [["11", "öufi", "elfi"], ["bier"]],
+      "on": ["WU_ES_IST", "WU_ZEIT", "WU_FUER", "WU_EIN", "WU_STD11", "WU_BIER"] },
+    { "id": "alarmZnüni", "triggers": [["znüni"]],
+      "on": ["WU_ES_IST", "WU_ZEIT", "WU_FUERS", "WU_ZNUENI"] },
+    { "id": "alarmZvieri", "triggers": [["zvieri"]],
+      "on": ["WU_ES_IST", "WU_ZEIT", "WU_FUERS", "WU_ZVIERI"] },
+    { "id": "alarmZnacht", "triggers": [["znacht"]],
+      "on": ["WU_ES_IST", "WU_ZEIT", "WU_FUERS", "WU_ZNACHT"] }
+  ]
+}

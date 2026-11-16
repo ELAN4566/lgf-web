@@ -1,0 +1,175 @@
+---
+import { Image } from 'astro:assets';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ProduktKarte from '../../components/ProduktKarte.astro';
+import { getProdukte, kategorien, slug, type Produkt } from '../../lib/produkte';
+import { site } from '../../site.config';
+
+export async function getStaticPaths() {
+  const { getProdukte, slug } = await import('../../lib/produkte');
+  const produkte = await getProdukte();
+  return produkte.map((p) => ({ params: { artikel: slug(p.id) }, props: { p } }));
+}
+
+interface Props {
+  p: Produkt;
+}
+const { p } = Astro.props;
+const kat = kategorien.find((k) => k.id === p.data.kategorie)!;
+const verwandte = (await getProdukte())
+  .filter((x) => x.data.kategorie === p.data.kategorie && x.id !== p.id && x.data.gruppe === p.data.gruppe)
+  .slice(0, 4);
+---
+
+<SiteLayout
+  title={`${p.id} – ${p.data.name}`}
+  description={p.data.kurz}
+  ogImage={p.data.bild?.src}
+>
+  <section class="section">
+    <div class="container">
+      <nav class="crumbs" aria-label="Pfad">
+        <a href="/hardware/">Hardware</a> › <a href={`/hardware/#${kat.id}`}>{kat.titel}</a>
+        {p.data.gruppe && <> › <span>{p.data.gruppe}</span></>}
+      </nav>
+
+      <div class="produkt" data-artikel={p.id}>
+        <div class="produkt__bild">
+          {
+            p.data.bild ? (
+              <Image
+                src={p.data.bild}
+                alt={`${p.id} ${p.data.name}`}
+                widths={[480, 720, 960]}
+                sizes="(max-width: 860px) 92vw, 520px"
+                loading="eager"
+              />
+            ) : (
+              <span class="produkt__noimg">{p.id}</span>
+            )
+          }
+        </div>
+        <div>
+          <span class="eyebrow">{kat.titel}</span>
+          <h1>{p.id}</h1>
+          <p class="produkt__name">{p.data.name}</p>
+          <p class="lead">{p.data.kurz}</p>
+          {
+            p.data.punkte.length > 0 && (
+              <ul class="produkt__punkte">
+                {p.data.punkte.map((t) => (
+                  <li>{t}</li>
+                ))}
+              </ul>
+            )
+          }
+
+          {/* Platz für Preis und «In den Warenkorb», sobald der Shop aktiv ist */}
+          {
+            site.shop.enabled ? (
+              <div class="produkt__shop" data-shop-artikel={p.id} />
+            ) : (
+              <div class="produkt__anfrage">
+                <a
+                  class="btn btn--primary"
+                  href={`mailto:${site.contactEmail}?subject=${encodeURIComponent('Anfrage ' + p.id)}`}
+                >
+                  Anfrage zu {p.id}
+                </a>
+                <a class="btn btn--outline" href="/download/#dokumentation">
+                  Hardwarebeschreibung
+                </a>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    verwandte.length > 0 && (
+      <section class="section section--alt">
+        <div class="container">
+          <h2 class="section-title">Passt dazu</h2>
+          <div class="raster">
+            {verwandte.map((v) => (
+              <ProduktKarte p={v} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</SiteLayout>
+
+<style>
+  .crumbs {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+  .crumbs a {
+    color: var(--muted);
+  }
+  .produkt {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .produkt {
+      grid-template-columns: 1fr;
+    }
+  }
+  .produkt__bild {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    aspect-ratio: 4 / 3;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .produkt__bild img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6%;
+  }
+  .produkt__noimg {
+    font-family: var(--font-head);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--line);
+  }
+  .produkt h1 {
+    margin-bottom: 0.1em;
+    color: var(--brand);
+  }
+  .produkt__name {
+    font-family: var(--font-head);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--brand-dark);
+  }
+  .produkt__punkte {
+    padding-left: 1.2em;
+  }
+  .produkt__punkte li {
+    margin-bottom: 0.35em;
+  }
+  .produkt__anfrage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .raster {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 16px;
+    margin-top: 1.25rem;
+  }
+</style>

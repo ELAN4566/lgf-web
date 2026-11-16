@@ -1,0 +1,32 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import WordClock from '../components/WordClock.astro';
+---
+
+<SiteLayout title="Seite nicht gefunden" hideAnnouncement>
+  <section class="section">
+    <div class="container notfound">
+      <div>
+        <span class="eyebrow">Fehler 404</span>
+        <h1>Hie isch nüt.</h1>
+        <p class="lead">Diese Seite gibt es nicht (mehr). Vielleicht hilft die Startseite weiter.</p>
+        <a class="btn btn--primary" href="/">Zur Startseite</a>
+      </div>
+      <WordClock controls={false} id="wordclock-404" />
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .notfound {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 800px) {
+    .notfound {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

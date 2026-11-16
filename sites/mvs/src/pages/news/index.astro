@@ -1,0 +1,31 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import NewsList from '@lgf/shared/components/NewsList.astro';
+import { getNewsForSite } from '@lgf/shared/lib/news.ts';
+import { site } from '../../site.config';
+
+const news = await getNewsForSite(site.id);
+---
+
+<SiteLayout title="News" description="Neuigkeiten rund um MVS." hideAnnouncement>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">News</span>
+      <h1>Neuigkeiten</h1>
+      <p class="lead">
+        Alle Meldungen rund um MVS. Abonnieren Sie den <a href="/news/rss.xml">RSS-Feed</a>,
+        um keine Neuigkeit zu verpassen.
+      </p>
+      <div class="archive">
+        <NewsList entries={news} groupByYear headingLevel="h3" />
+      </div>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .archive {
+    max-width: 48em;
+    margin-top: 2rem;
+  }
+</style>

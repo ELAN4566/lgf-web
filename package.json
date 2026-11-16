@@ -1,0 +1,22 @@
+{
+  "name": "lgf-web",
+  "private": true,
+  "description": "Websites der LGF Informatik AG: Wortuhr, MDS, MVS",
+  "workspaces": [
+    "packages/*",
+    "sites/*"
+  ],
+  "scripts": {
+    "dev:wortuhr": "npm run dev -w sites/wortuhr",
+    "build:wortuhr": "npm run build -w sites/wortuhr",
+    "preview:wortuhr": "npm run preview -w sites/wortuhr",
+    "dev:mds": "npm run dev -w sites/mds",
+    "build:mds": "npm run build -w sites/mds",
+    "dev:mvs": "npm run dev -w sites/mvs",
+    "build:mvs": "npm run build -w sites/mvs",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

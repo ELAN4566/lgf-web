@@ -1,0 +1,16 @@
+[Unit]
+Description=LGF-Websites aus dem GitHub-Branch "deploy" aktualisieren
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=lgfdeploy
+Group=lgfdeploy
+ExecStart=/opt/lgf-web-deploy-bin/lgf-web-deploy.sh
+# Absicherung
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/lgf-web-deploy /var/www/wortuhr
+ProtectHome=read-only
+PrivateTmp=yes

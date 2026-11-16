@@ -1,0 +1,106 @@
+---
+/**
+ * Schmales Hinweisband oben auf der Seite für eine hervorgehobene News.
+ * - erscheint nur bei News mit `highlight: true`
+ * - verschwindet nach `highlightUntil` (auch ohne neuen Build: Prüfung im Browser)
+ * - wer es wegklickt, sieht diese Meldung nicht mehr (localStorage, rein lokal)
+ */
+import type { NewsEntry } from '../lib/news';
+
+interface Props {
+  entry?: NewsEntry;
+}
+const { entry } = Astro.props;
+const until = entry?.data.highlightUntil?.toISOString() ?? '';
+---
+
+{
+  entry && (
+    <div class="announce" data-announce={entry.id} data-until={until} hidden>
+      <div class="container announce__inner">
+        <a href={`/news/${entry.id}/`} class="announce__link">
+          <span class="announce__tag">Neu</span>
+          <span>{entry.data.highlightText ?? entry.data.title}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <button type="button" class="announce__close" aria-label="Hinweis schliessen">
+          ✕
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-announce]');
+  if (bar) {
+    const key = 'announce-closed:' + bar.dataset.announce;
+    const until = bar.dataset.until ? Date.parse(bar.dataset.until) : NaN;
+    let closed = false;
+    try {
+      closed = localStorage.getItem(key) === '1';
+    } catch {
+      /* Speicher gesperrt – Band trotzdem zeigen */
+    }
+    const expired = !Number.isNaN(until) && Date.now() > until;
+    if (!closed && !expired) bar.hidden = false;
+
+    bar.querySelector('.announce__close')?.addEventListener('click', () => {
+      bar.hidden = true;
+      try {
+        localStorage.setItem(key, '1');
+      } catch {
+        /* ignorieren */
+      }
+    });
+  }
+</script>
+
+<style>
+  .announce {
+    background: var(--brand-accent);
+    color: var(--brand-accent-ink);
+    font-size: 0.95rem;
+  }
+  .announce__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 44px;
+  }
+  .announce__link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+    padding-block: 0.5rem;
+  }
+  .announce__link:hover {
+    color: inherit;
+    text-decoration: underline;
+  }
+  .announce__tag {
+    background: var(--brand-dark);
+    color: var(--brand-accent);
+    border-radius: 999px;
+    padding: 0.05em 0.7em;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .announce__close {
+    background: none;
+    border: 0;
+    color: inherit;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-sm);
+  }
+  .announce__close:hover {
+    background: rgb(0 0 0 / 8%);
+  }
+</style>

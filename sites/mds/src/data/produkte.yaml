@@ -1,0 +1,356 @@
+# MDS-Produktkatalog
+#
+# Ein Eintrag pro Artikel. Der Schlüssel (z. B. MDLIF5) ist die Artikelnummer:
+#  - Adresse der Produktseite: /hardware/mdlif5/
+#  - später Schlüssel für Preis/Lager aus der Datenbank (Shop)
+#
+# kategorie: decoder | interface | ledbus | komplett | zubehoer
+# gruppe:    nur für Interface-Module (Schalten & Steuern, Belegtmeldung, ...)
+# bild:      Pfad relativ zu dieser Datei
+# punkte:    Aufzählung auf der Produktseite
+# reihenfolge: Sortierung innerhalb der Kategorie (klein = zuerst)
+
+# ---------------------------------------------------------------- Decoder
+
+MDLIF5:
+  name: MDS Universaldecoder
+  kategorie: decoder
+  reihenfolge: 1
+  bild: ../assets/produkte/mdlif5.png
+  kurz: Universeller und modularer Decoder für Weichen, Belegtmelder, Signale, Beleuchtung usw.
+  punkte:
+    - Aufnahme von 5 Interface-Modulen
+    - Anschlussmöglichkeit LEDBUS
+    - Kommunikation über WLAN
+    - Onboard-Spannungswandler für 5 V und 3,3 V
+    - Aufnahme von maximal 2 zusätzlichen DC/DC-Convertern
+
+MDKSLB3:
+  name: MDS Beleuchtungsdecoder
+  kategorie: decoder
+  reihenfolge: 2
+  bild: ../assets/produkte/mdkslb3.png
+  kurz: Decoder mit 3 Anschlüssen für LEDBUS, 2 beleuchteten Tasten und einem Lautsprecher.
+  punkte:
+    - 3 Anschlüsse für LEDBUS
+    - 2 beleuchtete Tasten
+    - Lautsprecher
+    - Kommunikation über WLAN
+    - Onboard-Spannungswandler für 5 V und 3,3 V
+
+ADBAS5:
+  name: MDS Basisadapter
+  kategorie: decoder
+  reihenfolge: 3
+  bild: ../assets/produkte/adbas5.png
+  kurz: Basisadapter zur Aufnahme eines Decoders MDLIF5.
+  punkte:
+    - Schraubklemmen für die Anschlüsse der Peripheriegeräte
+    - Stecker für LEDBUS-Flachkabel
+    - Konfigurationsmöglichkeit für Extern-Anschlüsse EXT A / EXT B
+
+ADBAS5-S:
+  name: MDS Basisadapter S88
+  kategorie: decoder
+  reihenfolge: 4
+  bild: ../assets/produkte/adbas5-s.png
+  kurz: Basisadapter für MDLIF5 mit zusätzlicher RJ45-Buchse für den S88N-Rückmeldebus.
+  punkte:
+    - Schraubklemmen für die Anschlüsse der Peripheriegeräte
+    - Stecker für LEDBUS-Flachkabel
+    - RJ45-Buchse für S88N-Rückmeldebus
+    - Konfigurationsmöglichkeit für Extern-Anschlüsse EXT A / EXT B
+
+ADBASE:
+  name: MDS Basisadapter Typ E
+  kategorie: decoder
+  reihenfolge: 5
+  bild: ../assets/produkte/adbase.png
+  kurz: Basisadapter Typ E zur Aufnahme eines Decoders MDLIF5.
+
+SABASE:
+  name: Steckeradapter für ADBASE
+  kategorie: decoder
+  reihenfolge: 6
+  bild: ../assets/produkte/sabase.png
+  kurz: Steckeradapter für den Basisadapter ADBASE.
+
+# ---------------------------------------------------------------- Komplettgeräte
+
+MDS-BASIS:
+  name: MDS-BASIS
+  kategorie: komplett
+  reihenfolge: 1
+  bild: ../assets/produkte/mds-basis.png
+  kurz: Komplettgerät aus Basisadapter, Universaldecoder und Gehäuse.
+
+MDS-GATEWAY:
+  name: MDS-GATEWAY
+  kategorie: komplett
+  reihenfolge: 2
+  bild: ../assets/produkte/mds-gateway.png
+  kurz: Komplettgerät für die Anbindung an die Digitalzentrale.
+
+MDS-EVAL:
+  name: MDS-EVAL Evaluationspaket
+  kategorie: komplett
+  reihenfolge: 3
+  bild: ../assets/produkte/mds-eval.png
+  kurz: Evaluationspaket für den Einstieg in MDS, mit Inbetriebnahmeanleitung.
+
+# ---------------------------------------------------------------- Interface-Module
+
+IFMAG2:
+  name: Magnetspulen-Ansteuerung
+  kategorie: interface
+  gruppe: Schalten & Steuern
+  reihenfolge: 1
+  bild: ../assets/produkte/ifmag2.png
+  kurz: Antrieb von zwei Magnet-Doppelspulen für Weichen, Formsignale, Entkupplungsgleise, bewegte Figuren usw.
+
+IFSER2:
+  name: Servo-Ansteuerung
+  kategorie: interface
+  gruppe: Schalten & Steuern
+  reihenfolge: 2
+  bild: ../assets/produkte/ifser2.png
+  kurz: Ansteuerung von zwei Modellbau-Servos.
+  punkte:
+    - Stromversorgung der beiden Servos einzeln schaltbar
+    - Einschaltverzögerung konfigurierbar
+
+IFSER1P:
+  name: Servo-Ansteuerung mit Herzstückpolarisierung
+  kategorie: interface
+  gruppe: Schalten & Steuern
+  reihenfolge: 3
+  bild: ../assets/produkte/ifser1p.png
+  kurz: Ansteuerung eines Modellbau-Servos mit Umschalter für die Polarisierung des Weichen-Herzstücks.
+  punkte:
+    - Stromversorgung des Servos schaltbar
+    - Einschaltverzögerung konfigurierbar
+    - Umschalter für Herzstückpolarisierung
+
+IFMOT2:
+  name: Motor-Ansteuerung
+  kategorie: interface
+  gruppe: Schalten & Steuern
+  reihenfolge: 4
+  bild: ../assets/produkte/ifmot2.png
+  kurz: Anschluss von zwei Weichenmotoren mit Polarisierungsumschaltung oder für Motoren mit Drehzahlregelung.
+
+IFREL2:
+  name: Relais-Modul
+  kategorie: interface
+  gruppe: Schalten & Steuern
+  reihenfolge: 5
+  bild: ../assets/produkte/ifrel2.png
+  kurz: Zwei unabhängige Relais mit Anschluss von Mitten-, Arbeits- und Ruhekontakt.
+
+IFBSP2:
+  name: Belegtmelder 3-Leiter 2-fach
+  kategorie: interface
+  gruppe: Belegtmeldung
+  reihenfolge: 1
+  bild: ../assets/produkte/ifbsp2.png
+  kurz: Abfrage von zwei Belegtzuständen mit optisch isolierter Spannungsmessung für 3-Leiter-Gleis.
+  punkte:
+    - Optisch isolierte Spannungsmessung
+    - Überbrückung der zweiten Halbwelle für mehr Fahrsicherheit
+
+IFBSP4:
+  name: Belegtmelder 3-Leiter 4-fach
+  kategorie: interface
+  gruppe: Belegtmeldung
+  reihenfolge: 2
+  bild: ../assets/produkte/ifbsp4.png
+  kurz: Abfrage von vier Belegtzuständen mit optisch isolierter Spannungsmessung für 3-Leiter-Gleis.
+  punkte:
+    - Optisch isolierte Spannungsmessung
+    - Überbrückung der zweiten Halbwelle für mehr Fahrsicherheit
+
+IFBST2:
+  name: Belegtmelder 2-Leiter 2-fach
+  kategorie: interface
+  gruppe: Belegtmeldung
+  reihenfolge: 3
+  bild: ../assets/produkte/ifbst2.png
+  kurz: Abfrage von zwei Belegtzuständen mit optisch isolierter Strommessung für 2-Leiter-Gleis.
+
+IFBST1P:
+  name: Belegtmelder 2-Leiter mit Herzstückpolarisierung
+  kategorie: interface
+  gruppe: Belegtmeldung
+  reihenfolge: 4
+  bild: ../assets/produkte/ifbst1p.png
+  kurz: Abfrage eines Belegtzustands mit optisch isolierter Strommessung für 2-Leiter-Gleis und Weichen-Herzstückpolarisierung.
+
+IFLED4:
+  name: Direktanschluss LED 4-fach
+  kategorie: interface
+  gruppe: Beleuchtung
+  reihenfolge: 1
+  bild: ../assets/produkte/ifled4.png
+  kurz: Ansteuerung von 4 LED-Gruppen, je bis zu 3 LED in Serie.
+  punkte:
+    - Parallelschaltung mehrerer seriengeschalteter LED möglich
+
+IFLEDB:
+  name: Anschluss LEDBUS
+  kategorie: interface
+  gruppe: Beleuchtung
+  reihenfolge: 2
+  bild: ../assets/produkte/ifledb.png
+  kurz: Ansteuerung eines LEDBUS mit LED-Controllern vom Typ WS2811 und APA102.
+
+IFKEY2L:
+  name: Anschluss Leuchttaster 2-fach
+  kategorie: interface
+  gruppe: Tasten
+  reihenfolge: 1
+  bild: ../assets/produkte/ifkey2l.png
+  kurz: Anschluss von 2 Tastern mit integrierter LED-Beleuchtung über eine 2-Draht-Leitung.
+  punkte:
+    - LED-Beleuchtung beliebig schalt- und dimmbar
+
+IFKEY4:
+  name: Anschluss Taster 4-fach
+  kategorie: interface
+  gruppe: Tasten
+  reihenfolge: 2
+  bild: ../assets/produkte/ifkey4.png
+  kurz: Anschluss von 4 Tastern oder Schaltern.
+
+IFGDZ1:
+  name: Gateway zur Digitalzentrale
+  kategorie: interface
+  gruppe: Weitere
+  reihenfolge: 1
+  bild: ../assets/produkte/ifgdz1.png
+  kurz: Gateway zur Digitalzentrale mit optisch isolierter Protokolldetektion und S88-Ausgang.
+  punkte:
+    - Protokolldetektion des Gleissignals (MM2, mfx, DCC), optisch isoliert
+    - Bereitstellung des S88-Signals für Rückmeldeinformationen, optisch isoliert
+
+IFSND1:
+  name: Modul Audioausgabe
+  kategorie: interface
+  gruppe: Weitere
+  reihenfolge: 2
+  bild: ../assets/produkte/ifsnd1.png
+  kurz: Anschluss eines Stereo-Lautsprecherpaars oder zweier Einzellautsprecher (Mono) für Geräusche und Durchsagen.
+  punkte:
+    - Wiedergabe von WAV-Dateien (PCM und ADPCM)
+    - Audio-Streams über den MDS Controller
+    # TODO Erich: Beschreibung nach Abschluss Audio-Neubau prüfen
+
+IFKSM1:
+  name: Kehrschleifenmodul 2-Leiter
+  kategorie: interface
+  gruppe: Weitere
+  reihenfolge: 3
+  bild: ../assets/produkte/ifksm1.png
+  kurz: Kehrschleifensteuerung für das 2-Leiter-System mit Spannungserkennung auf dem Sensorgleis.
+  punkte:
+    - Für eine Kehrschleife oder ein Gleisdreieck werden zwei IFKSM1 benötigt
+
+# ---------------------------------------------------------------- LEDBUS-Adapter
+
+ADSIGH:
+  name: Signaladapter Typ H
+  kategorie: ledbus
+  reihenfolge: 1
+  bild: ../assets/produkte/adsigh.png
+  kurz: Signal auf Messingrohr mit integrierter Ansteuerungselektronik – sehr einfache Montage und Verkabelung.
+  punkte:
+    - Ansteuerung von bis zu 12 LED
+
+ADSIGM:
+  name: Signaladapter Typ M
+  kategorie: ledbus
+  reihenfolge: 2
+  bild: ../assets/produkte/adsigm.png
+  kurz: Für Signale von Microscale mit 16-poligem Stecksockel – sehr einfache Montage und Verkabelung.
+  punkte:
+    - Ansteuerung von bis zu 12 LED
+
+ADLED3:
+  name: LED-Adapter für 3 LED
+  kategorie: ledbus
+  reihenfolge: 3
+  bild: ../assets/produkte/adled3.png
+  kurz: Ansteuerung von 3 LED-Gruppen, je bis zu 3 LED in Serie.
+  punkte:
+    - Parallelschaltung mehrerer seriengeschalteter LED möglich
+
+ADLED6:
+  name: LED-Adapter für 6 LED
+  kategorie: ledbus
+  reihenfolge: 4
+  bild: ../assets/produkte/adled6.png
+  kurz: Ansteuerung von 6 Einzel-LED mit integrierter Konstantstromquelle – keine Vorwiderstände nötig.
+  punkte:
+    - LED je 2-drahtig angeschlossen
+
+ADLED9:
+  name: LED-Adapter für 9 LED
+  kategorie: ledbus
+  reihenfolge: 5
+  bild: ../assets/produkte/adled9.png
+  kurz: Ansteuerung von 9 Einzel-LED mit integrierter Konstantstromquelle – keine Vorwiderstände nötig.
+  punkte:
+    - LED mit gemeinsamer Anode angeschlossen
+
+ADRGB2:
+  name: Adapter RGB-LED 2 mm
+  kategorie: ledbus
+  reihenfolge: 6
+  bild: ../assets/produkte/adrgb2.png
+  kurz: Adapter für RGB-LED 2 mm.
+
+ADRGB5:
+  name: Adapter RGB/WWA-LED 5 mm
+  kategorie: ledbus
+  reihenfolge: 7
+  bild: ../assets/produkte/adrgb5.png
+  kurz: Adapter für RGB- oder WWA-LED 5 mm.
+
+ADRGB20:
+  name: Streifen 20 RGB-LED 2 mm
+  kategorie: ledbus
+  reihenfolge: 8
+  bild: ../assets/produkte/adrgb20.png
+  kurz: LED-Streifen mit 20 RGB-LED 2 mm, z. B. für Lauflichter und Animationen.
+
+ADLBV1:
+  name: LEDBUS-Verzweigung 1-fach
+  kategorie: ledbus
+  reihenfolge: 9
+  bild: ../assets/produkte/adlbv1.png
+  kurz: Einfache Verzweigung des LEDBUS.
+
+ADLBV2:
+  name: LEDBUS-Verzweigung 2-fach
+  kategorie: ledbus
+  reihenfolge: 10
+  bild: ../assets/produkte/adlbv2.png
+  kurz: Zweifache Verzweigung des LEDBUS.
+
+ADLBV2P:
+  name: LEDBUS-Verzweigung 2-fach mit Einspeisung
+  kategorie: ledbus
+  reihenfolge: 11
+  kurz: Zweifache Verzweigung des LEDBUS mit zusätzlicher Stromeinspeisung.
+
+# ---------------------------------------------------------------- Zubehör
+
+CVSDC2:
+  name: DC/DC-Converter 5 V / 12 V
+  kategorie: zubehoer
+  reihenfolge: 1
+  bild: ../assets/produkte/cvsdc2.png
+  kurz: Für die erweiterte Stromversorgung der Interface-Module und des LEDBUS.
+  punkte:
+    - Eingangsspannung 15 V bis ca. 24 V DC
+    - Ausgangsspannung 5 V bis ca. 20 V DC, max. 1,0 A
+    - Standardversion für +5 V DC und +12 V DC

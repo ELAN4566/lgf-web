@@ -1,0 +1,19 @@
+/* Wortuhr: Farben aus Flyer v12 «Nachtblau» */
+:root {
+  --brand-dark: #1f3450;
+  --brand-darker: #172840;
+  --brand: #2f5f8f;
+  --brand-accent: #f2c14e;
+  --brand-accent-ink: #1f3450;
+  --paper: #f7f5f0;
+  --paper-2: #ecebe6;
+}
+
+/* Schrift der Uhren-Buchstaben (Nunito, SIL Open Font License, lokal ausgeliefert) */
+@font-face {
+  font-family: 'Nunito Wortuhr';
+  src: url('/fonts/Nunito-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

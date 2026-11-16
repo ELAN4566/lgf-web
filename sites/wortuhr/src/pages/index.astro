@@ -1,0 +1,356 @@
+---
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import WordClock from '../components/WordClock.astro';
+import NewsList from '@lgf/shared/components/NewsList.astro';
+import { getNewsForSite } from '@lgf/shared/lib/news.ts';
+import { site } from '../site.config';
+import bildVorne from '../assets/bilder/wortuhr-vorne.png';
+
+const news = (await getNewsForSite(site.id)).slice(0, 3);
+
+const features = [
+  {
+    title: 'Stellt sich selbst',
+    text: 'Automatisch über WLAN oder per Smartphone. Eine Pufferbatterie hält die Zeit bei Stromunterbruch.',
+  },
+  {
+    title: 'Passt sich dem Raum an',
+    text: 'Die Helligkeit folgt dem Umgebungslicht, bei Dunkelheit auf Wunsch ganz aus.',
+  },
+  { title: 'Nachtmodus', text: 'Zu wählbaren Zeiten aus oder gedimmt.' },
+  { title: 'Farben nach Wahl', text: 'Sechs Farbschemen oder eigene Farben.' },
+  {
+    title: 'Wecken & Erinnern',
+    text: 'Bis zu acht Zeiten nach Wochentag, Ton mit ansteigender Lautstärke, eigene Töne möglich. Die Wörter blinken oder wechseln die Farbe.',
+  },
+  {
+    title: 'Einfach bedienbar',
+    text: 'Im Browser von Smartphone oder PC – ohne App.',
+  },
+  {
+    title: 'Zwei Tasten',
+    text: 'Weckton ausschalten, Farbschema wechseln, Anzeige kurz einschalten.',
+  },
+];
+
+const specs = [
+  ['Höhe', '254 mm'],
+  ['Breite', '217 mm'],
+  ['Tiefe', '30 mm'],
+  ['Gehäuse', 'Schwarz, andere Farben auf Anfrage'],
+  ['Speisung', 'USB-C, 5 V'],
+  ['Netzteil', 'mind. 1,5 A'],
+  ['Verbindung', 'WLAN (2,4 GHz)'],
+];
+---
+
+<SiteLayout>
+  <!-- Einstieg mit Live-Demo -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <span class="eyebrow">Wortuhr</span>
+        <h1>Die Zeit<br />in <span class="hero__accent">Mundart</span>.</h1>
+        <p class="lead">
+          Statt Zeigern leuchten Wörter: Die Wortuhr zeigt die Zeit so an, wie man sie sagt – auf
+          Solothurner oder Berner Dialekt.
+        </p>
+        <div class="hero__chips">
+          <span class="chip">Solothurnerdütsch</span>
+          <span class="chip">Bärndütsch</span>
+          <span class="chip">Weitere auf Anfrage</span>
+        </div>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="/vormerken/">Jetzt vormerken</a>
+          <a class="btn btn--outline" href="#funktionen">Funktionen</a>
+        </div>
+        <p class="small muted hero__note">
+          Die Uhr nebenan läuft live – probieren Sie eine andere Zeit, Farbe oder einen Wecktext.
+        </p>
+      </div>
+      <div class="hero__clock">
+        <WordClock />
+      </div>
+    </div>
+  </section>
+
+  <!-- So funktioniert's -->
+  <section class="section section--alt" id="funktionen">
+    <div class="container">
+      <h2 class="section-title">So funktioniert's</h2>
+      <p class="lead">
+        Die Wortuhr zeigt die Uhrzeit in ganzen Sätzen. Die Wörter wechseln alle fünf Minuten
+        sanft ineinander über; Leuchtpunkte am unteren Rand zeigen zusätzlich die einzelnen Minuten
+        und den Lauf der Sekunden.
+      </p>
+      <div class="grid grid--3 features">
+        {
+          features.map((f) => (
+            <div class="card feature">
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Sprache -->
+  <section class="section">
+    <div class="container lang">
+      <div>
+        <h2 class="section-title">Ihre Sprache, Ihre Wörter</h2>
+        <p>Aktuell erhältlich:</p>
+        <div class="hero__chips">
+          <span class="chip chip--filled">Solothurner Dialekt</span>
+          <span class="chip chip--filled">Berner Dialekt</span>
+        </div>
+        <p class="muted">Weitere Dialekte und Sprachen auf Anfrage.</p>
+        <p>
+          Auf Wunsch gestalten wir die Buchstaben Ihrer Wortuhr ganz nach Ihren Vorstellungen –
+          etwa mit einem Namen, einem Gruss oder Ihrem eigenen Dialekt. Wir beraten Sie gerne und
+          stimmen den Entwurf mit Ihnen ab.
+        </p>
+        <a class="btn btn--outline" href={`mailto:${site.contactEmail}?subject=Wortuhr%20mit%20eigenen%20W%C3%B6rtern`}
+          >Eigene Wörter anfragen</a
+        >
+      </div>
+      <blockquote class="quote">
+        <p>«Es isch füf vor haubi öufi.»</p>
+        <footer>Solothurnerdütsch für 10:25 Uhr</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Gehäuse & Technik -->
+  <section class="section section--alt" id="technik">
+    <div class="container grid grid--2 tech">
+      <div class="tech__img">
+        <Image
+          src={bildVorne}
+          alt="Wortuhr von vorne: «Es isch füf vor haubi öufi» leuchtet"
+          widths={[360, 540, 720, 1080]}
+          sizes="(max-width: 800px) 90vw, 480px"
+        />
+        <p class="small muted">Abbildung: Darstellung, das Produkt kann abweichen.</p>
+      </div>
+      <div>
+        <h2 class="section-title">Gehäuse &amp; Technik</h2>
+        <table class="specs">
+          <tbody>
+            {
+              specs.map(([k, v]) => (
+                <tr>
+                  <th scope="row">{k}</th>
+                  <td>{v}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="small muted">
+          Für die automatische Zeiteinstellung wird ein WLAN mit Internetzugang empfohlen.
+          Technische Änderungen vorbehalten.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preis / Vormerken -->
+  <section class="section section--dark">
+    <div class="container price">
+      <div>
+        <span class="eyebrow">Wortuhr in Mundart</span>
+        <h2>Jetzt vormerken</h2>
+        <p class="lead">
+          Erste Lieferungen im Verlauf des Januars 2027. Die Vormerkung ist unverbindlich und
+          kostenlos – wir benachrichtigen Sie, sobald die Wortuhr erhältlich ist.
+        </p>
+        <a class="btn btn--primary" href="/vormerken/">Vormerken</a>
+      </div>
+      <div class="price__box">
+        <span class="price__label">Voraussichtlicher Preis</span>
+        <span class="price__value">ab ca. Fr. 159.–</span>
+        <span class="price__note">inkl. MWST · Richtpreis je nach Ausführung, unverbindlich</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Herkunft -->
+  <section class="section">
+    <div class="container origin">
+      <h2>Entwickelt und von Hand zusammengebaut in Kriegstetten SO</h2>
+      <p class="lead">In der Region Solothurn werden seit über 150 Jahren Uhren gebaut – bis heute.</p>
+    </div>
+  </section>
+
+  <!-- News -->
+  {
+    news.length > 0 && (
+      <section class="section section--alt">
+        <div class="container">
+          <h2 class="section-title">Neuigkeiten</h2>
+          <NewsList entries={news} />
+          <p>
+            <a href="/news/">Alle Meldungen →</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+</SiteLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(40px, 7vw, 88px);
+    background:
+      radial-gradient(ellipse at 70% 40%, rgb(255 255 255 / 85%), transparent 60%),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+  .hero__accent {
+    color: var(--brand);
+  }
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block: 1.25rem;
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .hero__note {
+    margin-top: 1.25rem;
+  }
+  @media (max-width: 860px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .features {
+    margin-top: 2rem;
+  }
+  .feature h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.35em;
+  }
+  .feature p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .lang {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .lang {
+      grid-template-columns: 1fr;
+    }
+  }
+  .quote {
+    margin: 0;
+    padding: 2rem;
+    border-left: 4px solid var(--brand-accent);
+    background: var(--surface);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .quote p {
+    font-family: var(--font-head);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    color: var(--brand);
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+  }
+  .quote footer {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .tech {
+    align-items: center;
+  }
+  /* Bild bringt gerundetes Gehäuse und Schatten selbst mit (transparent) */
+  .tech__img img {
+    max-width: 480px;
+    width: 100%;
+  }
+  .specs {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  .specs th,
+  .specs td {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-weight: 400;
+  }
+  .specs th {
+    color: var(--muted);
+    width: 40%;
+  }
+  .specs td {
+    font-family: var(--font-head);
+    font-weight: 600;
+    color: var(--brand-dark);
+  }
+
+  .price {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .price {
+      grid-template-columns: 1fr;
+    }
+  }
+  .price__box {
+    background: var(--brand-accent);
+    color: var(--brand-accent-ink);
+    border-radius: var(--radius);
+    padding: 2rem;
+    display: grid;
+    gap: 0.3rem;
+    text-align: center;
+  }
+  .price__label {
+    font-size: 0.95rem;
+  }
+  .price__value {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+  }
+  .price__note {
+    font-size: 0.85rem;
+  }
+
+  .origin {
+    text-align: center;
+  }
+  .origin h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  }
+  .origin .lead {
+    margin-inline: auto;
+  }
+</style>

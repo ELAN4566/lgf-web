@@ -1,0 +1,193 @@
+---
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import overview from '../assets/bilder/app-overview-breit.png';
+import fahrzeug from '../assets/bilder/fahrzeugdetail.png';
+import sets from '../assets/bilder/setliste.png';
+import decoder from '../assets/bilder/decoderdetail.png';
+import worklog from '../assets/bilder/worklogliste.png';
+import katalog from '../assets/bilder/herstellermodellliste.png';
+
+const abschnitte = [
+  {
+    id: 'katalog',
+    titel: 'Produktkatalog: Geben und Nehmen',
+    bild: katalog,
+    text: [
+      'Jedes Modell wird über Hersteller und Artikelnummer nur einmal erfasst. Um es in Ihre Sammlung aufzunehmen, wählen Sie es im MVS-Produktkatalog aus – ähnlich wie bei einem realen Kauf – und ergänzen nur noch die Daten des Kaufs.',
+      'Fehlt ein Modell, erfassen Sie es selbst, mit technischen Daten und einem guten Bild. Der Administrator entfernt alle persönlichen Angaben wie Kaufort, Preis oder Besitzer; danach steht das Modell allen Benutzern zur Verfügung.',
+      'Eigene Änderungen wie andere Kupplungen, Radsätze, Decoder oder Beladung werden den allgemeinen Daten überlagert, ohne die Basisdaten zu verändern.',
+    ],
+  },
+  {
+    id: 'fahrzeuge',
+    titel: 'Modelle und eigene Fahrzeuge',
+    bild: fahrzeug,
+    text: [
+      'Modelle werden mit Hersteller, Artikelnummer, Kategorie, Baureihe und Bahngesellschaft beschrieben, dazu Details wie Länge, Kupplung, Radsätze, Beleuchtung, Antrieb und Decoder. Reichen die Felder nicht, gibt es grosszügige Freitextfelder.',
+      'Zu jedem eigenen Fahrzeug erfassen Sie Kauf (Ort, Datum, Preis), Besitz, Zustand und Standort. Vorbilder lassen sich mit Bildern und Beilagen dokumentieren und den Modellen zuweisen.',
+    ],
+  },
+  {
+    id: 'zuege',
+    titel: 'Züge und Sets',
+    bild: sets,
+    text: [
+      'Züge stellen Sie per Maus zusammen. Da die Bilder auf die Fahrzeuglänge kalibriert sind, wird jeder Zug massstäblich dargestellt.',
+      'Startpackungen, Wagensets und mehrteilige Fahrzeuge sind wie Modelle mit Hersteller und Artikelnummer abgelegt; die enthaltenen Modelle übernehmen Sie in Ihre Sammlung.',
+    ],
+  },
+  {
+    id: 'decoder',
+    titel: 'Decoderdaten',
+    bild: decoder,
+    text: [
+      'Adresse, Vmax/Vmin und weitere CV-Werte pro Fahrzeug, dazu die Zuordnung von Licht- und Soundfunktionen zu den Funktionstasten.',
+    ],
+  },
+  {
+    id: 'arbeiten',
+    titel: 'Arbeiten an Fahrzeugen',
+    bild: worklog,
+    text: [
+      'Änderungen, Reparaturen, Wartung und Superungen dokumentieren – und geplante Arbeiten vormerken, um sie später abzurufen.',
+    ],
+  },
+];
+
+const weitere = [
+  ['Zubehör', 'Strassen-, Wasser- und Luftfahrzeuge, Elektronik, Gleismaterial, Gebäude, Landschaft, Ersatzteile und Vorbild-Artikel.'],
+  ['Anlagen', 'Anlage-Elemente, Komponenten und Decoder mit Standort, Beschaltung und Adressierung dokumentieren. MDS-Decoder werden daraus automatisch konfiguriert.'],
+  ['Magazine', 'PDF-Magazine in die Datenbank importieren, ergänzen und seitenweise in der integrierten Leseansicht lesen.'],
+  ['Reports & Statistik', 'Übersichts- und Detaillisten als PDF, Verkaufslisten, Preisetiketten, Abrechnungen und eine frei konfigurierbare Pivot-Statistik.'],
+  ['Mehrbenutzerbetrieb', 'Familien- oder Vereinsmitglieder mit Schreib- oder Leserechten auf dieselbe Sammlung.'],
+  ['Zentrale Daten', 'Alle Daten liegen in einer hochverfügbaren Serverumgebung – kein lokales Backup, keine Synchronisation nötig. Sammlungen sind vollständig voneinander isoliert.'],
+];
+
+const schnittstellen = [
+  ['Mobile App', 'iOS und Android, auch offline. Kopplung mit der Windows-App per Synchronisierung oder QR-Code.'],
+  ['Eigene Website', 'Sammlung im Internet präsentieren über den integrierten Webserver – mit Verkaufsseite für Fahrzeuge.'],
+  ['QR-Code & Etiketten', 'Inventarnummern, Preisschilder oder QR-Codes für Fahrzeuge und Verpackungen drucken.'],
+  ['MDS Decoder', 'Firmware und Konfiguration der MDS-Zubehördecoder werden automatisch aus MVS übertragen.'],
+];
+---
+
+<SiteLayout
+  title="Funktionen"
+  description="Funktionen der MVS Applikation: Produktkatalog, Fahrzeuge, Züge, Sets, Decoder, Wartung, Zubehör, Anlagen, Reports und Schnittstellen."
+>
+  <section class="section section--alt">
+    <div class="container">
+      <span class="eyebrow">Funktionen</span>
+      <h1>Alles über Ihre Sammlung – an einem Ort</h1>
+      <p class="lead">
+        Eine komfortable Windows-Applikation mit Listen und Detailansichten, die Sie frei auf dem
+        Bildschirm anordnen und stufenlos zoomen können. Jede Liste lässt sich sortieren, filtern und
+        mit der Detailansicht koppeln.
+      </p>
+      <Image src={overview} alt="Übersicht der MVS Windows Applikation" widths={[480, 785]} sizes="(max-width: 860px) 92vw, 785px" class="overview" loading="eager" />
+    </div>
+  </section>
+
+  {
+    abschnitte.map((a, i) => (
+      <section class:list={['section', 'abschnitt', { 'section--alt': i % 2 === 1 }]} id={a.id}>
+        <div class:list={['container', 'abschnitt__grid', { 'abschnitt__grid--rev': i % 2 === 1 }]}>
+          <div class="prose">
+            <h2>{a.titel}</h2>
+            {a.text.map((t) => (
+              <p>{t}</p>
+            ))}
+          </div>
+          <Image src={a.bild} alt={a.titel} widths={[400, 640]} sizes="(max-width: 860px) 92vw, 480px" class="abschnitt__img" />
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2 class="section-title">Und ausserdem</h2>
+      <div class="grid grid--3 kacheln">
+        {
+          weitere.map(([t, x]) => (
+            <div class="card">
+              <h3>{t}</h3>
+              <p>{x}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="schnittstellen">
+    <div class="container">
+      <h2 class="section-title">Schnittstellen</h2>
+      <div class="grid grid--2">
+        {
+          schnittstellen.map(([t, x]) => (
+            <div class="iface">
+              <h3>{t}</h3>
+              <p>{x}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="weiter"><a class="btn btn--primary" href="/download/">MVS testen</a></p>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .overview {
+    margin: 2rem auto 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .abschnitt__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  .abschnitt__grid--rev .prose {
+    order: 2;
+  }
+  @media (max-width: 860px) {
+    .abschnitt__grid {
+      grid-template-columns: 1fr;
+    }
+    .abschnitt__grid--rev .prose {
+      order: 0;
+    }
+  }
+  .abschnitt__img {
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .kacheln {
+    margin-top: 1.5rem;
+  }
+  .kacheln h3 {
+    font-size: 1.05rem;
+    color: var(--brand);
+  }
+  .kacheln p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .iface {
+    border-left: 4px solid var(--brand-accent);
+    padding-left: 1.25rem;
+  }
+  .iface p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .weiter {
+    margin-top: 2.5rem;
+  }
+</style>

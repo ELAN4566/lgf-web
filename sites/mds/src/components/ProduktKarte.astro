@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+import { slug, type Produkt } from '../lib/produkte';
+
+interface Props {
+  p: Produkt;
+}
+const { p } = Astro.props;
+---
+
+<a class="pk" href={`/hardware/${slug(p.id)}/`} data-artikel={p.id}>
+  <div class="pk__img">
+    {
+      p.data.bild ? (
+        <Image src={p.data.bild} alt="" widths={[240, 360, 480]} sizes="240px" />
+      ) : (
+        <span class="pk__noimg" aria-hidden="true">{p.id}</span>
+      )
+    }
+  </div>
+  <span class="pk__art">{p.id}</span>
+  <span class="pk__name">{p.data.name}</span>
+  <span class="pk__kurz">{p.data.kurz}</span>
+</a>
+
+<style>
+  .pk {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr;
+    gap: 0.25rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      box-shadow 0.2s,
+      transform 0.2s;
+  }
+  .pk:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+    color: inherit;
+  }
+  .pk__img {
+    aspect-ratio: 4 / 3;
+    display: grid;
+    place-items: center;
+    margin-bottom: 0.5rem;
+    background: var(--paper);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .pk__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6%;
+  }
+  .pk__noimg {
+    font-family: var(--font-head);
+    color: var(--line);
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  .pk__art {
+    font-family: var(--font-head);
+    font-weight: 700;
+    color: var(--brand);
+    letter-spacing: 0.04em;
+  }
+  .pk__name {
+    font-weight: 600;
+    color: var(--brand-dark);
+    line-height: 1.3;
+  }
+  .pk__kurz {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>

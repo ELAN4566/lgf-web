@@ -1,0 +1,36 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { site } from '../site.config';
+---
+
+<SiteLayout title="Support" description="Hilfe zur MVS Applikation: Dokumentation, Problemmeldung und Weiterentwicklung.">
+  <section class="section section--alt">
+    <div class="container">
+      <span class="eyebrow">Support</span>
+      <h1>Hilfe und Weiterentwicklung</h1>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container prose">
+      <h2>Dokumentation</h2>
+      <p>
+        Benutzerhandbuch und Release Notes werden mit der Applikation verteilt. Das
+        <a href="/media/files/mvs-user-manual-01.pdf">Benutzerhandbuch</a> und die
+        <a href="/media/files/kurzanleitung-mvs-installation.pdf">Kurzanleitung zur Installation</a>
+        gibt es auch als PDF.
+      </p>
+      <h2>Hilfe bei Problemen</h2>
+      <p>
+        Bitte zuerst Benutzerhandbuch und Release Notes konsultieren. Hilft das nicht weiter,
+        beschreiben Sie das Problem möglichst vollständig und genau per E-Mail an
+        <a href={`mailto:${site.contactEmail}?subject=MVS%20Support`}>{site.contactEmail}</a>.
+      </p>
+      <h2>Weiterentwicklung</h2>
+      <p>
+        MVS wird laufend weiterentwickelt – neue Funktionen, Reports oder zusätzliche Felder, die
+        sich Benutzer wünschen. Haben Sie einen Vorschlag? Wir prüfen ihn sorgfältig und setzen ihn
+        gegebenenfalls um.
+      </p>
+    </div>
+  </section>
+</SiteLayout>

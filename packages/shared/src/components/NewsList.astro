@@ -1,0 +1,104 @@
+---
+/**
+ * Liste von News-Meldungen. Mit `groupByYear` als Archiv (Jahres-Überschriften),
+ * sonst als kompakte Liste (z. B. die neuesten drei auf der Startseite).
+ */
+import { formatDate, type NewsEntry } from '../lib/news';
+
+interface Props {
+  entries: NewsEntry[];
+  groupByYear?: boolean;
+  headingLevel?: 'h2' | 'h3';
+}
+const { entries, groupByYear = false, headingLevel = 'h3' } = Astro.props;
+
+const groups: [string, NewsEntry[]][] = groupByYear
+  ? Object.entries(
+      entries.reduce<Record<string, NewsEntry[]>>((acc, e) => {
+        const y = String(e.data.date.getFullYear());
+        (acc[y] ??= []).push(e);
+        return acc;
+      }, {}),
+    ).sort(([a], [b]) => Number(b) - Number(a))
+  : [['', entries]];
+const H = headingLevel;
+---
+
+{
+  entries.length === 0 ? (
+    <p class="muted">Noch keine Meldungen.</p>
+  ) : (
+    groups.map(([year, list]) => (
+      <section class="news-group">
+        {year && <h2 class="news-group__year">{year}</h2>}
+        <ul class="news-list">
+          {list.map((e) => (
+            <li class="news-item">
+              <time datetime={e.data.date.toISOString().slice(0, 10)} class="news-item__date">
+                {formatDate(e.data.date)}
+              </time>
+              <H class="news-item__title">
+                <a href={`/news/${e.id}/`}>{e.data.title}</a>
+                {e.data.draft && <span class="news-item__draft">Entwurf</span>}
+              </H>
+              <p class="news-item__summary">{e.data.summary}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  )
+}
+
+<style>
+  .news-group + .news-group {
+    margin-top: 2.5rem;
+  }
+  .news-group__year {
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.4rem;
+  }
+  .news-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .news-item {
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .news-item:last-child {
+    border-bottom: 0;
+  }
+  .news-item__date {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .news-item__title {
+    font-size: 1.2rem;
+    margin: 0.15rem 0 0.3rem;
+  }
+  .news-item__title a {
+    color: var(--brand-dark);
+    text-decoration: none;
+  }
+  .news-item__title a:hover {
+    text-decoration: underline;
+  }
+  .news-item__summary {
+    margin: 0;
+    color: var(--muted);
+  }
+  .news-item__draft {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    background: #fde68a;
+    color: #713f12;
+    padding: 0.1em 0.5em;
+    border-radius: 4px;
+    vertical-align: middle;
+  }
+</style>

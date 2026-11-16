@@ -1,0 +1,10 @@
+/* MDS: Lok-Orange aus dem Logo, technisches Dunkelblau */
+:root {
+  --brand-dark: #16293f;
+  --brand-darker: #0f1d2e;
+  --brand: #e5620a;
+  --brand-accent: #ff7a1a;
+  --brand-accent-ink: #16293f;
+  --paper: #f5f6f8;
+  --paper-2: #e9ecf0;
+}

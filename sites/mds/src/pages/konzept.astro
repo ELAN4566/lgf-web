@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import systemImg from '../assets/bilder/mds-systemuebersicht.png';
+
+const merkmale = [
+  ['Einfache Hardware', 'Leistungsfähige und kostengünstige Mikrocontroller-Einheit mit WLAN.'],
+  [
+    'Gemischte Funktionen',
+    'LED-Ansteuerung, Signale, Weichen, Herzstückpolarisierung und Rückmeldung auf einem einzigen Decoder – mit einer Grundversion sehr flexibel zusammenstellbar.',
+  ],
+  ['Weichen', 'Ansteuerung mit Servo, Motor oder Magnet, optional mit Herzstückpolarisierung.'],
+  [
+    'Belegtmeldung',
+    'Für 2-Leiter-Betrieb (Strommessung) und 3-Leiter-Betrieb (Spannungsmessung).',
+  ],
+  ['LEDBUS', 'Smart-LED für Signale, Einzelleuchten und LED-Leuchtbänder.'],
+  [
+    'Bedienung im Browser',
+    'Der MDS Controller überwacht und konfiguriert alle Decoder – bedient über WLAN mit Browser auf PC, Tablet oder Handy.',
+  ],
+  [
+    'Einheitliche Bezeichnungen',
+    'Alle Komponenten werden in MVS erfasst; die Namen sind auf Controller und Decodern aussagekräftig und konsistent.',
+  ],
+  [
+    'Update im eingebauten Zustand',
+    'Firmware und Basiskonfiguration werden vom Controller übertragen – ohne Ausbau und ohne Kabel zu lösen.',
+  ],
+  [
+    'Eine Firmware für alles',
+    'Die Decoder-Firmware kennt alle Schnittstellen und Kombinationen. Die Decoder können selbst bestückt werden.',
+  ],
+  [
+    'Einfache Inbetriebnahme',
+    'Der Decoder wird im AP-Modus mit dem Smartphone ins lokale WLAN aufgenommen.',
+  ],
+  ['Diagnose eingebaut', 'Hilfsmittel für Problemsuche und Störungsbehebung in Decoder und Controller.'],
+];
+---
+
+<SiteLayout
+  title="Konzept"
+  description="Systemarchitektur des Modellbahn Decoder Systems MDS: dezentrale Decoder, MDS Controller und MVS."
+>
+  <section class="section section--alt">
+    <div class="container">
+      <span class="eyebrow">Konzept</span>
+      <h1>Systemarchitektur</h1>
+      <p class="lead">
+        MDS ist eine neue, vollständig integrierte Art von stationären Zubehördecodern. Dank der
+        dezentralen Architektur sitzen die Decoder nahe an den Verbrauchern und Sensoren – das
+        reduziert den Verkabelungsaufwand stark.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container sys">
+      <Image src={systemImg} alt="Systemübersicht MDS" widths={[480, 800]} sizes="(max-width: 860px) 92vw, 480px" />
+      <div class="prose">
+        <h2>MDS Decoder – Fahren und Schalten/Überwachen</h2>
+        <p>
+          Kleine, modular aufgebaute Zubehördecoder für Weichen, Signale, Belegtmelder,
+          Lichtsteuerungen und -animationen – mit einem einzigen Decodertyp. Die Komponenten werden
+          mit kurzen Kabeln angeschlossen. Die Versorgung kommt über eine 2-Draht-Ringleitung, die
+          Daten über WLAN.
+        </p>
+        <h2>MDS Controller – Steuerung und Parametrisierung</h2>
+        <p>
+          Die Schaltzentrale zwischen Digitalzentrale, Decodern und Benutzer. Neben den Betriebsdaten
+          überträgt er Konfiguration und Firmware-Updates. Er läuft auf dem Modellbahn-PC oder auf
+          einem Raspberry Pi – dann wird für den Betrieb kein PC benötigt.
+        </p>
+        <h2>MVS – Definition und Konfiguration</h2>
+        <p>
+          Alle Weichen, Signale, Beleuchtungen und Belegtmelder werden mit der MVS Applikation
+          erfasst und in der zentralen MVS-Datenbank gespeichert. Der Controller holt sich die Daten
+          direkt von dort. MVS wird nur für die Konfiguration gebraucht, nicht für den Betrieb.
+          <a href="https://mvs.lgf.ch">Mehr zu MVS →</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2 class="section-title">Wichtigste Merkmale</h2>
+      <div class="grid grid--3 merkmale">
+        {
+          merkmale.map(([t, x]) => (
+            <div class="card">
+              <h3>{t}</h3>
+              <p>{x}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2 class="section-title">Hintergrund</h2>
+      <p>
+        An Bahnhofsein- und -ausfahrten liegen auf kleinem Raum viele Gleise, Weichen und Signale; auf
+        der Strecke dagegen nur einzelne. Klassische Decoder mit 4, 8 oder 16 Ports zwingen zur Wahl:
+        zentral platzieren (weniger Decoder, viel Kabel) oder dezentral (wenig Kabel, viele halb
+        genutzte Decoder).
+      </p>
+      <p>
+        Dazu kommt die Konfiguration über CV-Werte, oft mit herstellerabhängigen Programmiergeräten –
+        ebenso für Firmware-Updates und den Austausch defekter Decoder. Dokumentation und Backup
+        müssen von Hand nachgeführt werden.
+      </p>
+      <p>
+        <strong>MDS löst das anders:</strong> ein modularer Decoder, der genau so bestückt wird, wie es
+        der Ort verlangt, und eine zentrale Konfiguration aus MVS – ohne CV-Tabellen.
+      </p>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .sys {
+    display: grid;
+    grid-template-columns: minmax(0, 440px) 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .sys {
+      grid-template-columns: 1fr;
+    }
+  }
+  .sys .prose h2 {
+    font-size: 1.3rem;
+    margin-top: 0;
+  }
+  .sys .prose h2 + p {
+    margin-bottom: 1.6rem;
+  }
+  .merkmale {
+    margin-top: 1.5rem;
+  }
+  .merkmale h3 {
+    font-size: 1.05rem;
+    color: var(--brand);
+  }
+  .merkmale p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+</style>

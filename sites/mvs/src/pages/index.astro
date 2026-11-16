@@ -1,0 +1,458 @@
+---
+/**
+ * ENTWURF Startseite MVS – Texte aus der bisherigen Zeta-Producer-Site
+ * (Stand 2024), gekürzt und neu gegliedert. UWP nicht mehr erwähnt.
+ */
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import NewsList from '@lgf/shared/components/NewsList.astro';
+import { getNewsForSite } from '@lgf/shared/lib/news.ts';
+import { site } from '../site.config';
+
+import heroImg from '../assets/bilder/themebild-1915x720-v4.png';
+import overview from '../assets/bilder/app-overview-breit.png';
+import fahrzeug from '../assets/bilder/fahrzeugdetail.png';
+import sets from '../assets/bilder/setliste.png';
+import decoder from '../assets/bilder/decoderdetail.png';
+import katalog from '../assets/bilder/herstellermodellliste.png';
+import worklog from '../assets/bilder/worklogliste.png';
+import appstore from '../assets/bilder/appstore-01.png';
+import googleplay from '../assets/bilder/googleplay-01.png';
+
+const news = (await getNewsForSite(site.id)).slice(0, 3);
+
+const steps = [
+  {
+    title: 'Auswählen',
+    text: 'Modell im MVS-Produktkatalog suchen – wie beim Kauf im Laden. Keine Daten abtippen, keine Fotos machen.',
+  },
+  { title: 'Ergänzen', text: 'Kaufdatum, Preis, Standort und Zustand hinzufügen – fertig ist Ihr Fahrzeug.' },
+  {
+    title: 'Teilen',
+    text: 'Fehlt ein Modell, erfassen Sie es selbst. Ohne Ihre persönlichen Daten steht es danach allen zur Verfügung.',
+  },
+];
+
+const features = [
+  {
+    img: fahrzeug,
+    title: 'Fahrzeuge & Modelle',
+    text: 'Hersteller, Artikelnummer, Baureihe, Bahngesellschaft und Details wie Länge, Kupplung, Radsätze, Beleuchtung, Antrieb.',
+  },
+  {
+    img: sets,
+    title: 'Züge & Sets',
+    text: 'Züge per Maus zusammenstellen – massstäblich dargestellt. Startpackungen und Wagensets mit allen enthaltenen Modellen.',
+  },
+  {
+    img: decoder,
+    title: 'Decoderdaten',
+    text: 'Adresse, Vmax/Vmin, CV-Werte sowie Licht- und Soundfunktionen pro Fahrzeug.',
+  },
+  {
+    img: worklog,
+    title: 'Wartung & Arbeiten',
+    text: 'Reparaturen, Umbauten und Superungen dokumentieren, geplante Arbeiten vormerken.',
+  },
+  {
+    img: katalog,
+    title: 'Produktkatalog',
+    text: 'Gemeinsamer Katalog aller Benutzer mit Modellen und Zubehör von allen Herstellern und Spurweiten.',
+  },
+];
+
+const interfaces = [
+  { title: 'Mobile App', text: 'Sammlung auf iOS und Android anzeigen, auch offline. Kopplung mit der Windows-App per Synchronisierung oder QR-Code.' },
+  { title: 'Eigene Website', text: 'Sammlung im Internet präsentieren – ohne sich um Server, IP oder DNS zu kümmern. Mit Verkaufsseite für Fahrzeuge.' },
+  { title: 'QR-Code & Etiketten', text: 'Fahrzeuge und Verpackungen beschriften: Inventarnummer, Preisschild oder QR-Code.' },
+  { title: 'MDS Decoder', text: 'Firmware und Konfiguration der MDS-Zubehördecoder werden direkt aus MVS übertragen.', href: 'https://mds.lgf.ch' },
+];
+
+const prices = [
+  ['F', 'Freie Sammlung', 'bis 20 Elemente', 'kostenfrei'],
+  ['S', 'Kleine Sammlung', 'bis 100 Elemente', '36 CHF/EUR'],
+  ['M', 'Mittlere Sammlung', 'bis 400 Elemente', '48 CHF/EUR'],
+  ['L', 'Grosse Sammlung', 'bis 800 Elemente', '60 CHF/EUR'],
+  ['X', 'Sehr grosse Sammlung', 'über 800 Elemente', '72 CHF/EUR'],
+];
+---
+
+<SiteLayout>
+  <section class="hero">
+    <Image
+      src={heroImg}
+      alt=""
+      widths={[800, 1280, 1915]}
+      sizes="100vw"
+      loading="eager"
+      class="hero__bg"
+    />
+    <div class="container hero__content">
+      <span class="eyebrow">Modellbahn Verwaltung System</span>
+      <h1>Ihre Sammlung.<br />Perfekt im Überblick.</h1>
+      <p class="lead">
+        Ob kleine Privatsammlung, grosser Vereinsbestand oder professioneller Einsatz: MVS
+        verwaltet Fahrzeuge, Züge, Sets, Decoder und Zubehör – zentral, auf PC, Tablet und
+        Smartphone.
+      </p>
+      <div class="cta">
+        <a class="btn btn--primary" href="#download">30 Tage kostenlos testen</a>
+        <a class="btn btn--outline" href="#prinzip">So funktioniert's</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zahlen aus der MVS-Datenbank (Stand April 2024). TODO: aktualisieren, später automatisch beim Build aus der DB -->
+  <section class="stats" aria-label="MVS in Zahlen">
+    <div class="container stats__grid">
+      <div><strong>40'000+</strong><span>Fahrzeuge</span></div>
+      <div><strong>6'700+</strong><span>Modelle im Katalog</span></div>
+      <div><strong>1'800+</strong><span>Züge</span></div>
+      <div><strong>560+</strong><span>Sets</span></div>
+      <div><strong>430+</strong><span>Organisationen</span></div>
+    </div>
+  </section>
+
+  <section class="section" id="prinzip">
+    <div class="container">
+      <h2 class="section-title">Einmal erfasst – von allen genutzt</h2>
+      <p class="lead">
+        Jedes Modell wird über Hersteller und Artikelnummer nur einmal erfasst und steht danach allen
+        Sammlungen zur Verfügung. Geben und Nehmen: So wächst der Katalog mit jedem Benutzer.
+      </p>
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li class="card">
+              <span class="steps__nr">{i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="funktionen">
+    <div class="container">
+      <h2 class="section-title">Funktionen</h2>
+      <Image
+        src={overview}
+        alt="Übersicht der MVS Windows Applikation"
+        widths={[480, 785]}
+        sizes="(max-width: 860px) 92vw, 785px"
+        class="overview"
+      />
+      <div class="grid grid--3 features">
+        {
+          features.map((f) => (
+            <div class="card feature">
+              <Image src={f.img} alt="" widths={[320, 480]} sizes="320px" class="feature__img" />
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="schnittstellen">
+    <div class="container">
+      <h2 class="section-title">Schnittstellen</h2>
+      <div class="grid grid--2">
+        {
+          interfaces.map((i) => (
+            <div class="iface">
+              <h3>{i.title}</h3>
+              <p>
+                {i.text} {i.href && <a href={i.href}>Mehr zu MDS →</a>}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="preise">
+    <div class="container">
+      <h2 class="section-title">Preise</h2>
+      <p class="lead">
+        Alle Funktionen von Windows-App, Mobile App und Web-Applikation. Der Jahresbeitrag richtet
+        sich nach der Grösse der Sammlung – und sinkt, wenn Sie Modelle für den Katalog beisteuern.
+      </p>
+      <div class="prices">
+        {
+          prices.map(([k, name, size, price]) => (
+            <div class:list={['price', { 'price--free': k === 'F' }]}>
+              <span class="price__key">{k}</span>
+              <span class="price__name">{name}</span>
+              <span class="price__size">{size}</span>
+              <span class="price__value">{price}</span>
+              <span class="price__unit">{k === 'F' ? '' : 'pro Jahr'}</span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="small muted">
+        Elemente = Fahrzeuge mit Steuerung × 2 + Fahrzeuge ohne Steuerung + Zubehör + Magazine. Ohne
+        Kostenbeteiligung ist die Windows-App eingeschränkt nutzbar (bis 20 Elemente, ohne Mobile App,
+        Web und Druck).
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="download">
+    <div class="container grid grid--2 dl">
+      <div>
+        <h2>Download</h2>
+        <p class="lead">
+          Installieren, «Sammlung erstellen» klicken und 30 Tage mit vollem Funktionsumfang testen.
+          Ihre Daten bleiben beim Wechsel zum definitiven Konto erhalten.
+        </p>
+        <p>
+          <a class="btn btn--primary" href="/MvsClient/">MVS für Windows installieren</a>
+        </p>
+        <p class="small">
+          <a href="/media/files/kurzanleitung-mvs-installation.pdf">Kurzanleitung Installation</a> ·
+          <a href="/media/files/mvs-user-manual-01.pdf">Benutzerhandbuch</a> ·
+          <a href="/download/">Alle Details</a>
+        </p>
+        <div class="stores">
+          <a href="https://apps.apple.com/de/app/id1358590975" aria-label="MVS im App Store"
+            ><Image src={appstore} alt="Download im App Store" height={44} /></a
+          >
+          <a href="https://play.google.com/store/apps/details?id=ch.lgf.Mvs.MobileClient" aria-label="MVS bei Google Play"
+            ><Image src={googleplay} alt="Jetzt bei Google Play" height={44} /></a
+          >
+        </div>
+      </div>
+      <div class="req">
+        <h3>Systemvoraussetzungen</h3>
+        <ul>
+          <li>PC mit Windows 11 oder Windows 10</li>
+          <li>Internetzugang für Installation und Betrieb</li>
+          <li>Microsoft Word ab Office 2010 oder kompatibel (für Reports)</li>
+        </ul>
+        <h3>Datenübernahme</h3>
+        <p>
+          Bisher mit einem anderen Programm oder Excel gearbeitet? Wir übernehmen Ihre Sammlung als
+          Ganzes. <a href={`mailto:${site.contactEmail}?subject=MVS%20Daten%C3%BCbernahme`}>Support kontaktieren</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    news.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <h2 class="section-title">Neuigkeiten</h2>
+          <NewsList entries={news} />
+          <p>
+            <a href="/news/">Alle Meldungen →</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+</SiteLayout>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    color: #fff;
+    padding-block: clamp(72px, 12vw, 160px);
+    overflow: hidden;
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% center;
+    z-index: -2;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgb(19 42 79 / 95%) 0%, rgb(19 42 79 / 80%) 45%, rgb(19 42 79 / 15%) 100%);
+  }
+  .hero__content {
+    max-width: var(--max);
+  }
+  .hero h1 {
+    color: #fff;
+    max-width: 14em;
+  }
+  .hero .eyebrow {
+    color: #ff9c9e;
+  }
+  .hero .lead {
+    color: #d6deeb;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .hero .btn--outline {
+    border-color: #d6deeb;
+    color: #fff;
+  }
+
+  .stats {
+    background: var(--brand-dark);
+    color: #d6deeb;
+    border-top: 1px solid rgb(255 255 255 / 10%);
+    padding-block: 28px;
+  }
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap: 16px;
+    text-align: center;
+  }
+  .stats strong {
+    display: block;
+    font-family: var(--font-head);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: #fff;
+  }
+  .stats span {
+    font-size: 0.9rem;
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 24px;
+  }
+  .steps__nr {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--brand-accent);
+    color: #fff;
+    font-family: var(--font-head);
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .steps p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .overview {
+    margin: 1.5rem auto 2.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .feature__img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    object-position: top left;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    margin-bottom: 1rem;
+  }
+  .feature h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3em;
+  }
+  .feature p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .iface {
+    border-left: 4px solid var(--brand-accent);
+    padding-left: 1.25rem;
+  }
+  .iface h3 {
+    margin-bottom: 0.3em;
+  }
+  .iface p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .prices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    gap: 16px;
+    margin-block: 2rem 1rem;
+  }
+  .price {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    display: grid;
+    gap: 0.15rem;
+    text-align: center;
+  }
+  .price--free {
+    border-color: var(--brand);
+  }
+  .price__key {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--brand);
+  }
+  .price__name {
+    font-weight: 600;
+  }
+  .price__size {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .price__value {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--brand-dark);
+    margin-top: 0.5rem;
+  }
+  .price__unit {
+    font-size: 0.8rem;
+    color: var(--muted);
+    min-height: 1.2em;
+  }
+
+  .dl {
+    align-items: start;
+  }
+  .stores {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .stores img {
+    height: 44px;
+    width: auto;
+  }
+  .req {
+    background: rgb(255 255 255 / 6%);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+  .req ul {
+    padding-left: 1.2em;
+  }
+</style>

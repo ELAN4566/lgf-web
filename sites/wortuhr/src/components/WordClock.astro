@@ -1,0 +1,452 @@
+---
+/**
+ * Live-Demo der Wortuhr im Browser.
+ *
+ * Liest dieselbe Wort-Datei wie die Firmware (wrdclk_words_*.json):
+ * matrix, words, secondsDots, minutesDots, timeRules, alarmRules.
+ * Logik wie WordClockManager (MDSDEC):
+ *  - timeRules nach Minute auf 5 abgerundet, STD_CURRENT / STD_NEXT = Stunde 1..12
+ *  - Minutenpunkte WU_MIN01..04 = Minute % 5 (WU_MIN00 bleibt aus)
+ *  - Sekundenpunkte WU_SEK10..50 = Sekunde / 10 (WU_SEK00 bleibt aus)
+ */
+import words from '../data/wrdclk_words_de-CH-SO.json';
+
+interface Props {
+  /** Bedienelemente anzeigen (Zeit wählen, Farben, Spezialtexte) */
+  controls?: boolean;
+  /** Feste Startzeit "HH:MM" statt Live-Zeit (z. B. für Beispielbilder) */
+  fixed?: string;
+  id?: string;
+}
+const { controls = true, fixed, id = 'wordclock' } = Astro.props;
+
+const rows: string[] = words.matrix;
+const numCols = words.layout.numCols;
+const dots = [...words.secondsDots, ...words.minutesDots].sort((a, b) => a.col - b.col);
+
+/** Beschriftungen für die Spezialtext-Knöpfe */
+const alarmLabels: Record<string, string> = {
+  alarmZnüni: 'Znüni',
+  alarmZvieri: 'Zvieri',
+  alarmZnacht: 'Znacht',
+  alarmBier: 'Bier',
+  alarmGehen: 'Goo',
+};
+const alarms = words.alarmRules.filter((r) => alarmLabels[r.id]);
+
+const schemes = [
+  { id: 'warm', label: 'Warmweiss', word: '#f6ead2', sec: '#f6ead2', min: '#f6ead2' },
+  { id: 'mint', label: 'Mint', word: '#6ff0b2', sec: '#8c8cff', min: '#fff27a' },
+  { id: 'gold', label: 'Gold', word: '#f2c14e', sec: '#f2c14e', min: '#ff9f6b' },
+  { id: 'eis', label: 'Eisblau', word: '#9fd3ff', sec: '#ffffff', min: '#9fd3ff' },
+];
+---
+
+<div class="wc" id={id} data-wordclock data-fixed={fixed}>
+  <figure class="wc__figure">
+    <div class="wc__case" style={`--on:${schemes[0].word};--sec:${schemes[0].sec};--min:${schemes[0].min}`}>
+      <div class="wc__face" role="img" aria-label="Wortuhr" data-face>
+        <div class="wc__grid" style={`--cols:${numCols}`}>
+          {
+            rows.map((row, r) =>
+              [...row].map((ch, c) => (
+                <span class="wc__cell" data-cell={`${r + 1}-${c + 1}`} aria-hidden="true">
+                  {ch}
+                </span>
+              )),
+            )
+          }
+        </div>
+        <div class="wc__bar" aria-hidden="true"></div>
+        <div class="wc__dots" style={`--cols:${numCols}`} aria-hidden="true">
+          {dots.map((d) => <span class="wc__dot" data-cell={`${d.row}-${d.col}`} />)}
+        </div>
+      </div>
+    </div>
+    <figcaption class="wc__caption" data-caption>«Es isch …»</figcaption>
+  </figure>
+
+  {
+    controls && (
+      <div class="wc__controls">
+        <div class="wc__row">
+          <button type="button" class="wc__btn is-active" data-mode="live">
+            Jetzt
+          </button>
+          <label class="wc__time">
+            <span class="visually-hidden">Zeit wählen</span>
+            <input type="time" step="60" data-time-input />
+          </label>
+          <button type="button" class="wc__btn" data-mode="run" title="Einen Tag im Zeitraffer">
+            Zeitraffer
+          </button>
+        </div>
+        <div class="wc__row" role="group" aria-label="Farbschema">
+          {schemes.map((s, i) => (
+            <button
+              type="button"
+              class:list={['wc__swatch', { 'is-active': i === 0 }]}
+              data-scheme={s.id}
+              data-word={s.word}
+              data-sec={s.sec}
+              data-min={s.min}
+              style={`--sw:${s.word}`}
+              aria-label={`Farbschema ${s.label}`}
+              title={s.label}
+            />
+          ))}
+        </div>
+        {alarms.length > 0 && (
+          <div class="wc__row" role="group" aria-label="Spezialtexte beim Wecken">
+            <span class="wc__label">Wecken mit Text:</span>
+            {alarms.map((a) => (
+              <button type="button" class="wc__btn wc__btn--small" data-alarm={a.id}>
+                {alarmLabels[a.id]}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  <script type="application/json" data-config set:html={JSON.stringify(words)} />
+</div>
+
+<script>
+  type Word = { id: string; row: number; col: number; text: string };
+  type Dot = { id: string; row: number; col: number };
+  type Config = {
+    words: Word[];
+    secondsDots: Dot[];
+    minutesDots: Dot[];
+    timeRules: { minuteMod5: number; on: string[] }[];
+    alarmRules: { id: string; on: string[] }[];
+  };
+
+  function setup(root: HTMLElement) {
+    const cfg: Config = JSON.parse(root.querySelector('[data-config]')!.textContent!);
+    const cells = new Map<string, HTMLElement>();
+    root.querySelectorAll<HTMLElement>('[data-cell]').forEach((el) => cells.set(el.dataset.cell!, el));
+
+    // Wort-ID -> Zellen ('_' im Text = Lücke, bleibt dunkel)
+    const wordCells = new Map<string, HTMLElement[]>();
+    const wordText = new Map<string, string>();
+    for (const w of cfg.words) {
+      const list: HTMLElement[] = [];
+      [...w.text].forEach((ch, i) => {
+        if (ch === '_') return;
+        const el = cells.get(`${w.row}-${w.col + i}`);
+        if (el) list.push(el);
+      });
+      wordCells.set(w.id, list);
+      wordText.set(w.id, w.text.replace(/_/g, ' '));
+    }
+    const dotCell = (d: Dot) => cells.get(`${d.row}-${d.col}`);
+
+    const face = root.querySelector<HTMLElement>('[data-face]')!;
+    const caption = root.querySelector<HTMLElement>('[data-caption]')!;
+    const caseEl = root.querySelector<HTMLElement>('.wc__case')!;
+
+    function hourId(h: number) {
+      const h12 = h % 12 || 12;
+      return 'WU_STD' + String(h12).padStart(2, '0');
+    }
+
+    function wordsForTime(h: number, m: number): string[] {
+      const rule = cfg.timeRules.find((r) => r.minuteMod5 === Math.floor(m / 5) * 5);
+      if (!rule) return [];
+      return rule.on.map((id) =>
+        id === 'STD_CURRENT' ? hourId(h) : id === 'STD_NEXT' ? hourId(h + 1) : id,
+      );
+    }
+
+    function sentence(ids: string[]) {
+      const s = ids.map((id) => wordText.get(id) ?? '').join(' ').toLowerCase();
+      return '«' + s.charAt(0).toUpperCase() + s.slice(1) + '.»';
+    }
+
+    function render(ids: string[], m: number | null, s: number | null, alarm = false) {
+      const lit = new Set<HTMLElement>();
+      ids.forEach((id) => wordCells.get(id)?.forEach((el) => lit.add(el)));
+      cells.forEach((el) => {
+        if (el.classList.contains('wc__cell')) el.classList.toggle('is-on', lit.has(el));
+      });
+      cfg.minutesDots.forEach((d) => {
+        const n = Number(d.id.slice(-2));
+        dotCell(d)?.classList.toggle('is-on-min', m !== null && n >= 1 && n <= m % 5);
+      });
+      cfg.secondsDots.forEach((d) => {
+        const n = Number(d.id.slice(-2));
+        dotCell(d)?.classList.toggle('is-on-sec', s !== null && n >= 10 && n <= Math.floor(s / 10) * 10);
+      });
+      face.classList.toggle('is-alarm', alarm);
+      const text = sentence(ids);
+      caption.textContent = text;
+      face.setAttribute('aria-label', 'Wortuhr zeigt: ' + text.replace(/[«».]/g, ''));
+    }
+
+    function zurichNow() {
+      const parts = new Intl.DateTimeFormat('de-CH', {
+        timeZone: 'Europe/Zurich',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hourCycle: 'h23',
+      }).formatToParts(new Date());
+      const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+      return { h: get('hour'), m: get('minute'), s: get('second') };
+    }
+
+    let timer: number | undefined;
+    const stop = () => {
+      if (timer) window.clearInterval(timer);
+      timer = undefined;
+    };
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-mode], [data-alarm]');
+    const setActive = (btn: Element | null) =>
+      buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+
+    function live() {
+      stop();
+      const tick = () => {
+        const { h, m, s } = zurichNow();
+        render(wordsForTime(h, m), m, s);
+      };
+      tick();
+      timer = window.setInterval(tick, 1000);
+    }
+
+    function showTime(h: number, m: number) {
+      stop();
+      render(wordsForTime(h, m), m, 0);
+    }
+
+    function timelapse() {
+      stop();
+      let t = zurichNow().h * 60;
+      timer = window.setInterval(() => {
+        t = (t + 1) % (24 * 60);
+        render(wordsForTime(Math.floor(t / 60), t % 60), t % 60, 0);
+      }, 120);
+    }
+
+    // Startzustand
+    const fixed = root.dataset.fixed;
+    if (fixed) {
+      const [h, m] = fixed.split(':').map(Number);
+      showTime(h, m);
+    } else {
+      live();
+    }
+
+    // Bedienelemente
+    root.querySelector('[data-mode="live"]')?.addEventListener('click', (e) => {
+      setActive(e.currentTarget as Element);
+      live();
+    });
+    root.querySelector('[data-mode="run"]')?.addEventListener('click', (e) => {
+      setActive(e.currentTarget as Element);
+      timelapse();
+    });
+    const timeInput = root.querySelector<HTMLInputElement>('[data-time-input]');
+    timeInput?.addEventListener('input', () => {
+      if (!timeInput.value) return;
+      const [h, m] = timeInput.value.split(':').map(Number);
+      setActive(null);
+      showTime(h, m);
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-alarm]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const rule = cfg.alarmRules.find((r) => r.id === btn.dataset.alarm);
+        if (!rule) return;
+        stop();
+        setActive(btn);
+        render(rule.on, null, null, true);
+      }),
+    );
+    root.querySelectorAll<HTMLButtonElement>('[data-scheme]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        caseEl.style.setProperty('--on', btn.dataset.word!);
+        caseEl.style.setProperty('--sec', btn.dataset.sec!);
+        caseEl.style.setProperty('--min', btn.dataset.min!);
+        root
+          .querySelectorAll('[data-scheme]')
+          .forEach((b) => b.classList.toggle('is-active', b === btn));
+      }),
+    );
+
+    // Im Hintergrund-Tab nicht unnötig rechnen
+    document.addEventListener('visibilitychange', () => {
+      const liveBtn = root.querySelector('[data-mode="live"]');
+      if (document.hidden && liveBtn?.classList.contains('is-active')) stop();
+      else if (!document.hidden && liveBtn?.classList.contains('is-active')) live();
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-wordclock]').forEach(setup);
+</script>
+
+<style>
+  .wc {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+  .wc__figure {
+    margin: 0;
+    width: 100%;
+    max-width: 440px;
+    display: grid;
+    gap: 1rem;
+  }
+  /* Gehäuse 217 × 254 mm */
+  .wc__case {
+    aspect-ratio: 217 / 254;
+    background: #2a2a2d;
+    /* Eckradius 8 mm wie Gehäuse und Flyer (8/217 breit, 8/254 hoch) */
+    border-radius: 3.69% / 3.15%;
+    padding: 5.5%;
+    box-shadow:
+      0 30px 60px rgb(10 20 35 / 35%),
+      inset 0 0 0 1px rgb(255 255 255 / 4%);
+    container-type: inline-size;
+  }
+  .wc__face {
+    height: 100%;
+    background: #1e1e20;
+    border-radius: 0;
+    padding: 7% 6% 6%;
+    display: flex;
+    flex-direction: column;
+  }
+  .wc__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    flex: 1;
+    align-content: space-between;
+  }
+  .wc__cell {
+    font-family: 'Nunito Wortuhr', 'Nunito', 'Varela Round', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 6.4cqi;
+    line-height: 1.35;
+    text-align: center;
+    color: #3d3d3d;
+    transition:
+      color 0.8s ease,
+      text-shadow 0.8s ease;
+    user-select: none;
+  }
+  .wc__cell.is-on {
+    color: var(--on);
+    text-shadow:
+      0 0 0.18em color-mix(in srgb, var(--on) 75%, transparent),
+      0 0 0.6em color-mix(in srgb, var(--on) 35%, transparent);
+  }
+  .wc__face.is-alarm .wc__cell.is-on {
+    animation: wc-blink 1s steps(2, jump-none) infinite;
+  }
+  @keyframes wc-blink {
+    50% {
+      color: #3d3d3d;
+      text-shadow: none;
+    }
+  }
+  .wc__bar {
+    height: 1.2cqi;
+    border-radius: 1cqi;
+    background: #3a3a3a;
+    margin: 3.5cqi 0 3cqi;
+  }
+  .wc__dots {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    justify-items: center;
+  }
+  .wc__dot {
+    width: 2.6cqi;
+    aspect-ratio: 1;
+    border-radius: 0.3cqi;
+    background: #3a3a3a;
+    transition:
+      background-color 0.4s,
+      box-shadow 0.4s;
+  }
+  .wc__dot.is-on-sec {
+    background: var(--sec);
+    box-shadow: 0 0 1.4cqi color-mix(in srgb, var(--sec) 60%, transparent);
+  }
+  .wc__dot.is-on-min {
+    background: var(--min);
+    box-shadow: 0 0 1.4cqi color-mix(in srgb, var(--min) 60%, transparent);
+  }
+  .wc__caption {
+    text-align: center;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--brand);
+    min-height: 1.6em;
+  }
+
+  .wc__controls {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: center;
+  }
+  .wc__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .wc__label {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .wc__btn {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.45em 1.1em;
+    border-radius: 999px;
+    border: 1.5px solid var(--brand);
+    background: transparent;
+    color: var(--brand-dark);
+    cursor: pointer;
+  }
+  .wc__btn:hover {
+    background: var(--paper-2);
+  }
+  .wc__btn.is-active {
+    background: var(--brand-dark);
+    border-color: var(--brand-dark);
+    color: #fff;
+  }
+  .wc__btn--small {
+    font-size: 0.875rem;
+    padding: 0.3em 0.9em;
+  }
+  .wc__time input {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.35em 0.8em;
+    border-radius: 999px;
+    border: 1.5px solid var(--brand);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .wc__swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 3px solid #1c1c1c;
+    background: var(--sw);
+    cursor: pointer;
+    box-shadow: 0 0 0 1.5px var(--line);
+  }
+  .wc__swatch.is-active {
+    box-shadow: 0 0 0 2.5px var(--brand-dark);
+  }
+</style>

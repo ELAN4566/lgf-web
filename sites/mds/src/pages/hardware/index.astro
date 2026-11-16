@@ -1,0 +1,101 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ProduktKarte from '../../components/ProduktKarte.astro';
+import { getProdukte, kategorien, interfaceGruppen } from '../../lib/produkte';
+
+const produkte = await getProdukte();
+const nachKategorie = (k: string) => produkte.filter((p) => p.data.kategorie === k);
+---
+
+<SiteLayout
+  title="Hardware"
+  description="Alle Hardware-Komponenten des Modellbahn Decoder Systems MDS: Decoder, Interface-Module, LEDBUS-Adapter, Komplettgeräte und Zubehör."
+>
+  <section class="section section--alt intro">
+    <div class="container">
+      <span class="eyebrow">Hardware</span>
+      <h1>Wenige Bausteine, beliebig kombinierbar</h1>
+      <p class="lead">
+        Der Decoder wird mit genau den Interface-Modulen bestückt, die am Einsatzort gebraucht
+        werden. Jedes Interface-Modul hat 4 gleichwertige IO-Ports zum Prozessor und 5 gegen aussen –
+        und passt auf jeden Steckplatz.
+      </p>
+      <nav class="jump" aria-label="Kategorien">
+        {kategorien.map((k) => <a class="chip" href={`#${k.id}`}>{k.titel}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  {
+    kategorien.map((k) => {
+      const list = nachKategorie(k.id);
+      if (list.length === 0) return null;
+      return (
+        <section class="section kat" id={k.id}>
+          <div class="container">
+            <h2 class="section-title">{k.titel}</h2>
+            <p class="muted">{k.text}</p>
+            {k.id === 'interface' ? (
+              interfaceGruppen.map((g) => {
+                const sub = list.filter((p) => p.data.gruppe === g);
+                return sub.length === 0 ? null : (
+                  <>
+                    <h3 class="gruppe">{g}</h3>
+                    <div class="raster">
+                      {sub.map((p) => (
+                        <ProduktKarte p={p} />
+                      ))}
+                    </div>
+                  </>
+                );
+              })
+            ) : (
+              <div class="raster">
+                {list.map((p) => (
+                  <ProduktKarte p={p} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    })
+  }
+</SiteLayout>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .jump .chip {
+    text-decoration: none;
+    background: var(--surface);
+  }
+  .jump .chip:hover {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+  }
+  .kat {
+    padding-block: clamp(36px, 5vw, 64px);
+    scroll-margin-top: 64px;
+  }
+  .kat + .kat {
+    border-top: 1px solid var(--line);
+  }
+  .gruppe {
+    margin: 2rem 0 1rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .raster {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 16px;
+    margin-top: 1.25rem;
+  }
+</style>

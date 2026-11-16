@@ -1,0 +1,44 @@
+---
+/** Impressum – gemeinsamer Text für alle Sites. */
+import { company, type SiteConfig } from '../../lib/site';
+
+interface Props {
+  site: SiteConfig;
+}
+const { site } = Astro.props;
+---
+
+<div class="prose">
+  <h2>Anbieter und verantwortlich für den Inhalt</h2>
+  <p>
+    <strong>{company.name}</strong><br />
+    {company.street}<br />
+    CH-{company.zip} {company.city}<br />
+    {company.country}
+  </p>
+  <p>
+    Telefon: <a href={`tel:${company.phone.replace(/\s/g, '')}`}>{company.phone}</a><br />
+    E-Mail: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a><br />
+    Web: <a href={company.web}>{company.web.replace('https://', '')}</a>
+  </p>
+  {company.uid && <p>UID: {company.uid}</p>}
+
+  <h2>Haftungsausschluss</h2>
+  <p>
+    Die Inhalte dieser Website werden mit grösster Sorgfalt erstellt. Für die Richtigkeit,
+    Vollständigkeit und Aktualität übernehmen wir jedoch keine Gewähr. Abbildungen können vom
+    gelieferten Produkt abweichen; technische Änderungen und Preisänderungen bleiben vorbehalten.
+  </p>
+  <p>
+    Verweise auf Websites Dritter liegen ausserhalb unseres Verantwortungsbereichs. Für deren
+    Inhalte sind ausschliesslich die jeweiligen Betreiber verantwortlich.
+  </p>
+
+  <h2>Urheberrechte</h2>
+  <p>
+    Texte, Bilder und Grafiken auf dieser Website gehören der {company.name} oder den genannten
+    Rechteinhabern. Jede Verwendung ausserhalb dieser Website bedarf unserer vorgängigen
+    schriftlichen Zustimmung.
+  </p>
+  <slot />
+</div>

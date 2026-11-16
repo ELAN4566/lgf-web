@@ -1,0 +1,69 @@
+---
+/**
+ * Datenschutzerklärung – gemeinsamer Text für alle Sites.
+ * ENTWURF: von Erich zu prüfen. Grundlage: statische Website, eigener Server
+ * in der Schweiz, keine Cookies, kein Tracking, keine externen Dienste.
+ * Sobald Shop oder Formulare dazukommen, muss der Text ergänzt werden.
+ */
+import { company, type SiteConfig } from '../../lib/site';
+
+interface Props {
+  site: SiteConfig;
+  /** Stand der Erklärung */
+  updated: string;
+}
+const { site, updated } = Astro.props;
+---
+
+<div class="prose">
+  <p class="muted">Stand: {updated}</p>
+
+  <h2>Verantwortliche Stelle</h2>
+  <p>
+    Verantwortlich für die Bearbeitung von Personendaten auf dieser Website im Sinne des
+    schweizerischen Datenschutzgesetzes (DSG) ist:
+  </p>
+  <p>
+    {company.name}, {company.street}, CH-{company.zip} {company.city}<br />
+    E-Mail: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+  </p>
+
+  <h2>Grundsatz</h2>
+  <p>
+    Diese Website kommt ohne Cookies, ohne Analyse- oder Werbedienste und ohne eingebundene
+    Inhalte Dritter (z.&nbsp;B. Schriften, Karten oder Videos von externen Anbietern) aus. Sie
+    wird auf eigenen Servern der {company.name} in der Schweiz betrieben.
+  </p>
+
+  <h2>Server-Protokolle</h2>
+  <p>
+    Beim Aufruf einer Seite speichert der Webserver technisch notwendige Angaben in
+    Protokolldateien: IP-Adresse, Datum und Uhrzeit, aufgerufene Adresse, übertragene Datenmenge,
+    Browser-Kennung und die zuvor besuchte Seite. Diese Angaben dienen ausschliesslich dem
+    sicheren Betrieb und der Fehlersuche, werden nicht mit anderen Daten zusammengeführt und
+    nach spätestens <!-- TODO Erich: Aufbewahrungsdauer der nginx-Logs prüfen -->30 Tagen
+    gelöscht.
+  </p>
+
+  <h2>Lokale Speicherung im Browser</h2>
+  <p>
+    Wenn Sie einen Hinweis oben auf der Seite schliessen, merkt sich Ihr Browser dies lokal
+    (sogenannter <em>Local Storage</em>). Diese Angabe verlässt Ihr Gerät nicht und kann
+    jederzeit über die Browser-Einstellungen gelöscht werden.
+  </p>
+
+  <h2>Kontakt per E-Mail</h2>
+  <p>
+    Wenn Sie uns per E-Mail kontaktieren oder sich für eine Benachrichtigung vormerken lassen,
+    verwenden wir Ihre Angaben nur zur Bearbeitung Ihrer Anfrage. Wir geben sie nicht an Dritte
+    weiter und löschen sie auf Wunsch jederzeit.
+  </p>
+
+  <h2>Ihre Rechte</h2>
+  <p>
+    Sie können jederzeit Auskunft über Ihre bei uns gespeicherten Personendaten verlangen sowie
+    deren Berichtigung oder Löschung beantragen. Wenden Sie sich dazu an die oben genannte
+    Adresse.
+  </p>
+  <slot />
+</div>

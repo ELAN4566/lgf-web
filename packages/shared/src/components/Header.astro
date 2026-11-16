@@ -1,0 +1,170 @@
+---
+/**
+ * Kopfzeile mit Logo/Name, Navigation und (vorbereitet) Warenkorb-Symbol.
+ * Auf schmalen Bildschirmen klappt die Navigation in ein Menü.
+ */
+import type { SiteConfig } from '../lib/site';
+
+interface Props {
+  site: SiteConfig;
+}
+const { site } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href.replace(/\/$/, '') || path.startsWith(href.replace(/\/$/, '') + '/');
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__brand" href="/" aria-label={`${site.name} – Startseite`}>
+      <slot name="logo">
+        <span class="site-header__name">{site.name}</span>
+      </slot>
+    </a>
+
+    <button class="site-header__toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="visually-hidden">Menü</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+    </button>
+
+    <nav id="site-nav" class="site-header__nav" aria-label="Hauptnavigation">
+      <ul>
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          site.shop.enabled && (
+            <li>
+              <a href="/shop/warenkorb/" class="site-header__cart" aria-label="Warenkorb">
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                  <circle cx="17" cy="20" r="1.5" fill="currentColor" />
+                </svg>
+                <span data-cart-count>0</span>
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.site-header__toggle');
+  const nav = document.getElementById('site-nav');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('is-open', !open);
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(247 245 240 / 92%);
+    backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    gap: 1rem;
+  }
+  .site-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--brand-dark);
+  }
+  .site-header__name {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .site-header__nav ul {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-header__nav a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.98rem;
+  }
+  .site-header__nav a:hover {
+    background: var(--paper-2);
+  }
+  .site-header__nav a[aria-current='page'] {
+    color: var(--brand-dark);
+    font-weight: 600;
+    background: var(--paper-2);
+  }
+  .site-header__cart {
+    display: flex !important;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .site-header__toggle {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 0.5rem;
+    color: var(--brand-dark);
+    cursor: pointer;
+  }
+
+  @media (max-width: 760px) {
+    .site-header__toggle {
+      display: block;
+    }
+    .site-header__nav {
+      display: none;
+      position: absolute;
+      inset: 64px 0 auto 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .site-header__nav.is-open {
+      display: block;
+    }
+    .site-header__nav ul {
+      flex-direction: column;
+      padding: 0.5rem var(--gutter) 1rem;
+    }
+    .site-header__nav a {
+      padding: 0.75rem 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+  }
+</style>

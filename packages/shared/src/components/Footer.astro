@@ -1,0 +1,103 @@
+---
+/** Fusszeile: Anbieter, Kontakt, Rechtliches, Querverweise auf die anderen Sites. */
+import { company, siblingSites, type SiteConfig } from '../lib/site';
+
+interface Props {
+  site: SiteConfig;
+}
+const { site } = Astro.props;
+const siblings = siblingSites.filter((s) => s.id !== site.id);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div>
+      <p class="site-footer__label">Anbieter</p>
+      <p>
+        <strong>{company.name}</strong><br />
+        {company.street}<br />
+        CH-{company.zip} {company.city} {company.canton}
+      </p>
+    </div>
+    <div>
+      <p class="site-footer__label">Kontakt</p>
+      <p>
+        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a><br />
+        <a href={`tel:${company.phone.replace(/\s/g, '')}`}>{company.phone}</a>
+      </p>
+    </div>
+    <div>
+      <p class="site-footer__label">Weitere Angebote</p>
+      <ul>
+        {
+          siblings.map((s) => (
+            <li>
+              <a href={s.url}>{s.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+  <div class="container site-footer__bottom">
+    <span>© {year} {company.name}</span>
+    <nav aria-label="Rechtliches">
+      <a href="/news/rss.xml">RSS</a>
+      <a href="/impressum/">Impressum</a>
+      <a href="/datenschutz/">Datenschutz</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--brand-dark);
+    color: #c9d2de;
+    padding-top: 48px;
+    font-size: 0.95rem;
+  }
+  .site-footer a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: var(--brand-accent);
+    text-decoration: underline;
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 24px 40px;
+    padding-bottom: 32px;
+  }
+  .site-footer__label {
+    font-family: var(--font-head);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--brand-accent);
+    margin-bottom: 0.6em;
+  }
+  .site-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-footer li {
+    margin-bottom: 0.3em;
+  }
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 20px;
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    font-size: 0.875rem;
+  }
+  .site-footer__bottom nav {
+    display: flex;
+    gap: 20px;
+  }
+</style>

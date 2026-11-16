@@ -1,0 +1,102 @@
+---
+/**
+ * Vormerken: vorerst per E-Mail (vorausgefüllt), damit keine Daten über den
+ * Webserver laufen. Später kann hier ein Formular mit dem Shop-Backend
+ * (/api/shop) folgen.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { site } from '../site.config';
+
+const subject = 'Vormerkung Wortuhr';
+const body = [
+  'Bitte benachrichtigen Sie mich, sobald die Wortuhr erhältlich ist.',
+  '',
+  'Vorname, Name (freiwillig):',
+  'Strasse, Nr. (freiwillig):',
+  'PLZ Ort (freiwillig):',
+  'Telefon (freiwillig):',
+  '',
+  'Dialekt: Solothurner / Berner / anderer:',
+  'Gehäuse: Schwarz / andere Farbe:',
+  'Interesse an eigenen Wörtern / Anordnung: ja / nein',
+  'Anzahl Stück:',
+].join('\n');
+const mailto = `mailto:${site.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+---
+
+<SiteLayout
+  title="Vormerken"
+  description="Lassen Sie sich unverbindlich und kostenlos für die Wortuhr vormerken. Erste Lieferungen im Januar 2027."
+>
+  <section class="section section--dark">
+    <div class="container">
+      <span class="eyebrow">Wortuhr</span>
+      <h1>Vormerken lassen</h1>
+      <p class="lead">
+        Die Wortuhr ist bald erhältlich – erste Lieferungen im Verlauf des Januars 2027. Wir
+        benachrichtigen Sie, sobald sie verfügbar ist. Die Vormerkung ist unverbindlich und
+        kostenlos.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid--2">
+      <div>
+        <div class="price card">
+          <span class="muted">Voraussichtlicher Preis</span>
+          <strong class="price__value">ab ca. Fr. 159.–</strong>
+          <span>inkl. MWST</span>
+          <span class="small muted">
+            Richtpreis je nach Ausführung, unverbindlich. Der definitive Preis folgt mit der
+            Benachrichtigung.
+          </span>
+        </div>
+      </div>
+      <div>
+        <h2 class="section-title">So geht's</h2>
+        <ol class="steps">
+          <li>
+            Klicken Sie auf <strong>«Vormerkung per E-Mail»</strong> – Ihr E-Mail-Programm öffnet
+            sich mit einer vorbereiteten Nachricht.
+          </li>
+          <li>Ergänzen Sie, was Sie möchten. Nur Ihre E-Mail-Adresse ist nötig.</li>
+          <li>Senden – fertig. Wir melden uns, sobald die Wortuhr erhältlich ist.</li>
+        </ol>
+        <p>
+          <a class="btn btn--primary" href={mailto}>Vormerkung per E-Mail</a>
+        </p>
+        <p class="small muted">
+          Kein E-Mail-Programm? Schreiben Sie direkt an
+          <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+        </p>
+        <p class="small muted">
+          Ihre Angaben dienen nur diesem Zweck, werden nicht an Dritte weitergegeben und auf Wunsch
+          jederzeit gelöscht. Verantwortlich ist die LGF Informatik AG – siehe
+          <a href="/datenschutz/">Datenschutz</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .price {
+    display: grid;
+    gap: 0.35rem;
+    background: var(--paper-2);
+    border: 0;
+  }
+  .price__value {
+    font-family: var(--font-head);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    color: var(--brand-dark);
+    line-height: 1.1;
+  }
+  .steps {
+    padding-left: 1.3em;
+  }
+  .steps li {
+    margin-bottom: 0.6em;
+  }
+</style>

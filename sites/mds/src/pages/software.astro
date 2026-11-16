@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import software from '../assets/bilder/mds-software.png';
+---
+
+<SiteLayout
+  title="Software"
+  description="MDS Controller: Konfiguration und Bedienung der MDS Decoder im Browser, Systemvoraussetzungen und Kosten."
+>
+  <section class="section section--alt">
+    <div class="container">
+      <span class="eyebrow">Software</span>
+      <h1>MDS Controller</h1>
+      <p class="lead">
+        Der MDS Controller verbindet Digitalzentrale, Decoder und Benutzer. Bedient wird er im
+        Browser – auf dem PC, dem Tablet oder dem Smartphone.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid--2 sw">
+      <div class="prose">
+        <h2>Systemvoraussetzungen</h2>
+        <ul>
+          <li>PC mit Windows 10 oder Windows 11 <!-- TODO Erich: Windows 8/8.1 noch nennen? --></li>
+          <li>Alternativ: Raspberry Pi als Kleincomputer für den Controller</li>
+          <li>Internetzugang für Installation und Betrieb</li>
+          <li>
+            Ein gutes WLAN am Ort der Modellbahn – der Access Point sollte bei der Anlage stehen
+          </li>
+          <li>Tablet oder Smartphone für die erstmalige Aufnahme der Decoder ins WLAN</li>
+        </ul>
+
+        <h2>Keine Datenhaltung, kein Backup</h2>
+        <p>
+          Der Controller speichert keine eigenen Daten. Alles kommt aus der MVS-Datenbank oder wird
+          von den Decodern geladen.
+        </p>
+
+        <h2>Immer aktuell</h2>
+        <p>Neue Versionen werden beim nächsten Start automatisch installiert.</p>
+
+        <h2>Kosten</h2>
+        <p>Der Betrieb der MDS Controller Software ist <strong>kostenfrei</strong>.</p>
+
+        <p><a class="btn btn--primary" href="/download/">Zum Download</a></p>
+      </div>
+      <Image src={software} alt="MDS Software" widths={[480, 800]} sizes="(max-width: 860px) 92vw, 520px" class="sw__img" />
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .sw {
+    align-items: start;
+  }
+  .sw .prose h2 {
+    font-size: 1.3rem;
+  }
+  .sw__img {
+    border-radius: var(--radius);
+  }
+</style>

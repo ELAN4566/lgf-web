@@ -1,0 +1,10 @@
+/* MVS: Lok-Rot aus dem Logo, Blau wie bisher */
+:root {
+  --brand-dark: #1b3a6b;
+  --brand-darker: #132a4f;
+  --brand: #2a5aa8;
+  --brand-accent: #e3262b;
+  --brand-accent-ink: #ffffff;
+  --paper: #f6f7fa;
+  --paper-2: #e8ecf3;
+}

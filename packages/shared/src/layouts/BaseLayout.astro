@@ -1,0 +1,91 @@
+---
+/**
+ * Grundlayout aller LGF-Websites: <head> (SEO, Open Graph, RSS),
+ * Hinweisband, Kopfzeile, Inhalt, Fusszeile.
+ */
+import '../styles/base.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AnnouncementBar from '../components/AnnouncementBar.astro';
+import { getHighlight } from '../lib/news';
+import type { SiteConfig } from '../lib/site';
+
+interface Props {
+  site: SiteConfig;
+  /** Seitentitel; leer = nur Site-Name + Tagline (Startseite) */
+  title?: string;
+  description?: string;
+  /** Absoluter oder site-relativer Pfad zu einem Vorschaubild (Open Graph) */
+  ogImage?: string;
+  /** Hinweisband ausblenden (z. B. auf der News-Seite selbst) */
+  hideAnnouncement?: boolean;
+  lang?: string;
+}
+
+const {
+  site,
+  title,
+  description = site.description,
+  ogImage,
+  hideAnnouncement = false,
+  lang = 'de-CH',
+} = Astro.props;
+
+const fullTitle = title ? `${title} – ${site.name}` : `${site.name} – ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImageUrl = ogImage ? new URL(ogImage, site.url).href : undefined;
+const highlight = hideAnnouncement ? undefined : await getHighlight(site.id);
+---
+
+<!doctype html>
+<html lang={lang} data-site={site.id}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} – News`} href="/news/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#1f3450" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_CH" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <AnnouncementBar entry={highlight} />
+    <Header site={site}>
+      <slot name="logo" slot="logo" />
+    </Header>
+    <main id="main">
+      <slot />
+    </main>
+    <Footer site={site} />
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--brand-dark);
+    color: #fff;
+    padding: 0.6rem 1rem;
+  }
+  .skip-link:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+  }
+</style>
