@@ -2,9 +2,13 @@
 
 Websites der LGF Informatik AG, gebaut mit [Astro](https://astro.build).
 
+- **Texte ändern, News schreiben, publizieren:** [docs/schreiben-und-publizieren.md](docs/schreiben-und-publizieren.md)
+- **Stand und Zusammenfassung der Anpassungen:** [docs/stand-2026-11.md](docs/stand-2026-11.md)
+- **Server einrichten:** [deploy/README-server.md](deploy/README-server.md)
+
 | Site | Adresse | Ordner | Stand |
 |---|---|---|---|
-| Wortuhr | wortuhr.lgf.ch | `sites/wortuhr` | im Aufbau |
+| Wortuhr | wortuhr.lgf.ch | `sites/wortuhr` | live (appsrv, seit 17.11.2026) |
 | MDS | mds.lgf.ch | `sites/mds` | Entwurf Startseite (online noch Zeta Producer) |
 | MVS | mvs.lgf.ch | `sites/mvs` | Entwurf Startseite (online noch Zeta Producer) |
 | LGF | www.lgf.ch | – | noch Zeta Producer, später Landing Page |
@@ -15,8 +19,10 @@ Websites der LGF Informatik AG, gebaut mit [Astro](https://astro.build).
 content/news/            News aller Sites (Feld "sites" bestimmt, wo sie erscheinen)
 packages/shared/         Gemeinsamer Baukasten: Layout, Kopf-/Fusszeile, News, Rechtstexte, Stile
 sites/wortuhr/           Wortuhr-Site (Seiten, Live-Demo, Bilder, Farben)
+sites/mds/, sites/mvs/   MDS- und MVS-Site (MDS-Produktkatalog in src/data/produkte.yaml)
 deploy/                  nginx-Vorlagen, systemd-Timer, Deploy-Skript, Server-Anleitung
-.github/workflows/       Build auf GitHub -> Branch "deploy"
+docs/                    Anleitungen und Stand
+.github/workflows/       Build auf GitHub -> Branch "deploy" bzw. "deploy-test"
 ```
 
 ## Arbeiten
@@ -26,6 +32,8 @@ Voraussetzung: Node.js ≥ 22.23 (installiert: 26 LTS).
 ```bash
 npm install              # einmalig bzw. nach Paket-Änderungen
 npm run dev:wortuhr      # Vorschau mit Live-Aktualisierung: http://localhost:4321
+npm run dev:mds          # http://localhost:4322
+npm run dev:mvs          # http://localhost:4323
 npm run build:wortuhr    # fertige Site nach sites/wortuhr/dist
 ```
 
@@ -92,7 +100,7 @@ Die Artikelnummer ist auch der spätere Schlüssel für Preise/Lager aus der Dat
 `sites/wortuhr/src/data/wrdclk_words_de-CH-SO.json` – eine Kopie der Firmware-Datei
 `MDSDEC/src/products/wordclock/filesystem/wrdclk_words_de-CH-SO_rel2.json`.
 Bei Änderungen an der Matrix die Datei neu kopieren. Die Logik entspricht `WordClockManager`
-(timeRules, Minuten- und Sekundenpunkte, alarmRules).
+(timeRules, Minuten- und Sekundenpunkte); zur eingestellten Weckzeit blinken die Wörter.
 
 ## Vorbereitet für später
 

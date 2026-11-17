@@ -17,7 +17,7 @@ gestalten wir auf Anfrage.
 ## Das Wichtigste in Kürze
 
 - Voraussichtlicher Preis **ab ca. Fr. 159.–** inkl. MWST (Richtpreis je nach Ausführung)
-- Erste Lieferungen **im Verlauf des Januars 2027**
+- Erste Lieferungen **im Verlauf des Januars 2027**, nur innerhalb der Schweiz
 - Stellt sich selbst über WLAN, Pufferbatterie bei Stromunterbruch
 - Helligkeit passt sich dem Raum an, Nachtmodus, sechs Farbschemen
 - Wecker mit bis zu acht Zeiten und eigenen Tönen
