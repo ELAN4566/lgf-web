@@ -125,12 +125,16 @@ Tipp: **mvstestsrv zuerst umstellen**, dort prüfen, dann mvssrv.
 ## 4. dmzsrv
 
 - **wortuhr.lgf.ch (neu):**
-  1. DNS: `wortuhr.lgf.ch` auf die öffentliche IP von dmzsrv (A/AAAA oder CNAME).
-  2. `deploy/nginx/dmzsrv-wortuhr.lgf.ch.conf` übernehmen, appsrv-Adresse und SSL-Einstellungen
-     wie bei den anderen Sites anpassen.
+  1. DNS **zweimal** eintragen:
+     - öffentlich bei Solnet (nrdns1/2.solnet.ch): A `wortuhr` → 212.101.20.60
+     - intern auf LGFDC1 (Split-DNS, Zone lgf.ch): A `wortuhr` → 10.1.6.3 (dmzsrv) –
+       sonst ist die Site aus dem Firmennetz nicht erreichbar.
+     Prüfen: `dig +short wortuhr.lgf.ch @nrdns1.solnet.ch` (Cache umgehen).
+  2. Zuerst nur den Port-80-Block als `/etc/nginx/conf.d/wortuhr.conf`, `nginx -t && systemctl reload nginx`.
   3. Zertifikat: `certbot certonly --webroot -w /var/www/letsencrypt -d wortuhr.lgf.ch`
-     (oder wie bei den übrigen Sites).
-  4. `nginx -t && systemctl reload nginx`
+  4. Dann die vollständige `deploy/nginx/dmzsrv-wortuhr.lgf.ch.conf` (Aufbau wie www.conf,
+     Snippets von dmzsrv), `nginx -t && systemctl reload nginx`.
+  5. Test auf dmzsrv: `curl -sI --resolve wortuhr.lgf.ch:443:127.0.0.1 https://wortuhr.lgf.ch/`
 - **mvs, mds, mvstest, mdstest:** keine Änderung – sie zeigen bereits auf mvssrv bzw. mvstestsrv.
 
 ## Arbeiten mit dem Test-Branch
