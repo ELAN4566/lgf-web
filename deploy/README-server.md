@@ -94,8 +94,12 @@ sudo cp deploy/nginx/lgf-robots-map.conf /etc/nginx/conf.d/00-lgf-robots-map.con
 **appsrv:**
 
 ```bash
-sudo cp deploy/nginx/wortuhr.lgf.ch.conf /etc/nginx/conf.d/
-# TODO in der Datei: IP von dmzsrv bei set_real_ip_from
+sudo cp deploy/nginx/wortuhr.lgf.ch.conf /etc/nginx/conf.d/wortuhr.conf
+# Port 5104 (wie www auf 5102). SELinux erlaubt nginx auf appsrv bereits 5100-5109
+# (semanage port -l | grep http_port_t) – sonst: semanage port -a -t http_port_t -p tcp 5104
+# Firewall: nur dmzsrv darf zugreifen (bzw. wie bei 5102 gelöst, siehe firewall-cmd --list-all)
+sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=10.1.6.3 port port=5104 protocol=tcp accept'
+sudo firewall-cmd --reload
 sudo nginx -t && sudo systemctl reload nginx
 ```
 

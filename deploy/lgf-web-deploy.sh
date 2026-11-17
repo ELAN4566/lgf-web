@@ -26,9 +26,12 @@ fi
 cd "$REPO_DIR"
 git fetch --quiet origin "$BRANCH"
 
-LOCAL=$(git rev-parse HEAD)
+# Zuletzt ausgelieferter Stand (nicht HEAD: ein frischer Klon ist schon aktuell,
+# wurde aber noch nie nach /var/www kopiert)
+STATE="$REPO_DIR/.git/lgf-deployed"
 REMOTE=$(git rev-parse "origin/$BRANCH")
-if [[ "$LOCAL" == "$REMOTE" && "${1:-}" != "--force" ]]; then
+DEPLOYED=$(cat "$STATE" 2>/dev/null || true)
+if [[ "$DEPLOYED" == "$REMOTE|$SITES" && "${1:-}" != "--force" ]]; then
   exit 0   # nichts Neues
 fi
 
@@ -46,3 +49,5 @@ for site in $SITES; do
   command -v restorecon >/dev/null && restorecon -R "$WWW_ROOT/$site" || true
   echo "  $site aktualisiert"
 done
+
+echo "$REMOTE|$SITES" > "$STATE"
