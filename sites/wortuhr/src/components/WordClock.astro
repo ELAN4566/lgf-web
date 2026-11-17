@@ -3,7 +3,7 @@
  * Live-Demo der Wortuhr im Browser.
  *
  * Liest dieselbe Wort-Datei wie die Firmware (wrdclk_words_*.json):
- * matrix, words, secondsDots, minutesDots, timeRules, alarmRules.
+ * matrix, words, secondsDots, minutesDots, timeRules (alarmRules nicht genutzt).
  * Logik wie WordClockManager (MDSDEC):
  *  - timeRules nach Minute auf 5 abgerundet, STD_CURRENT / STD_NEXT = Stunde 1..12
  *  - Minutenpunkte WU_MIN01..04 = Minute % 5 (WU_MIN00 bleibt aus)
@@ -12,7 +12,7 @@
 import words from '../data/wrdclk_words_de-CH-SO.json';
 
 interface Props {
-  /** Bedienelemente anzeigen (Zeit wählen, Farben, Spezialtexte) */
+  /** Bedienelemente anzeigen (Zeit wählen, Farben, Weckzeit) */
   controls?: boolean;
   /** Feste Startzeit "HH:MM" statt Live-Zeit (z. B. für Beispielbilder) */
   fixed?: string;
@@ -23,16 +23,6 @@ const { controls = true, fixed, id = 'wordclock' } = Astro.props;
 const rows: string[] = words.matrix;
 const numCols = words.layout.numCols;
 const dots = [...words.secondsDots, ...words.minutesDots].sort((a, b) => a.col - b.col);
-
-/** Beschriftungen für die Spezialtext-Knöpfe */
-const alarmLabels: Record<string, string> = {
-  alarmZnüni: 'Znüni',
-  alarmZvieri: 'Zvieri',
-  alarmZnacht: 'Znacht',
-  alarmBier: 'Bier',
-  alarmGehen: 'Goo',
-};
-const alarms = words.alarmRules.filter((r) => alarmLabels[r.id]);
 
 const schemes = [
   { id: 'warm', label: 'Warmweiss', word: '#f6ead2', sec: '#f6ead2', min: '#f6ead2' },
@@ -96,16 +86,12 @@ const schemes = [
             />
           ))}
         </div>
-        {alarms.length > 0 && (
-          <div class="wc__row" role="group" aria-label="Spezialtexte beim Wecken">
-            <span class="wc__label">Wecken mit Text:</span>
-            {alarms.map((a) => (
-              <button type="button" class="wc__btn wc__btn--small" data-alarm={a.id}>
-                {alarmLabels[a.id]}
-              </button>
-            ))}
-          </div>
-        )}
+        <div class="wc__row">
+          <label class="wc__time">
+            <span class="wc__label">Weckzeit:</span>
+            <input type="time" step="60" data-alarm-input />
+          </label>
+        </div>
       </div>
     )
   }
@@ -121,7 +107,6 @@ const schemes = [
     secondsDots: Dot[];
     minutesDots: Dot[];
     timeRules: { minuteMod5: number; on: string[] }[];
-    alarmRules: { id: string; on: string[] }[];
   };
 
   function setup(root: HTMLElement) {
@@ -203,15 +188,22 @@ const schemes = [
       if (timer) window.clearInterval(timer);
       timer = undefined;
     };
-    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-mode], [data-alarm]');
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-mode]');
     const setActive = (btn: Element | null) =>
       buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
 
+    // Weckzeit in Minuten seit Mitternacht (null = kein Wecker).
+    // Zur Weckzeit blinken die Wörter (wie die Uhr beim Wecken) – live eine Minute lang.
+    let alarmAt: number | null = null;
+    let shown: { h: number; m: number } | null = null; // fest gewählte Zeit
+    const isAlarm = (h: number, m: number) => alarmAt !== null && h * 60 + m === alarmAt;
+
     function live() {
       stop();
+      shown = null;
       const tick = () => {
         const { h, m, s } = zurichNow();
-        render(wordsForTime(h, m), m, s);
+        render(wordsForTime(h, m), m, s, isAlarm(h, m));
       };
       tick();
       timer = window.setInterval(tick, 1000);
@@ -219,15 +211,22 @@ const schemes = [
 
     function showTime(h: number, m: number) {
       stop();
-      render(wordsForTime(h, m), m, 0);
+      shown = { h, m };
+      render(wordsForTime(h, m), m, 0, isAlarm(h, m));
     }
 
     function timelapse() {
       stop();
+      shown = null;
       let t = zurichNow().h * 60;
+      let hold = 0; // zur Weckzeit kurz anhalten, damit das Blinken sichtbar ist
       timer = window.setInterval(() => {
+        if (hold > 0 && --hold > 0) return;
         t = (t + 1) % (24 * 60);
-        render(wordsForTime(Math.floor(t / 60), t % 60), t % 60, 0);
+        const h = Math.floor(t / 60);
+        const alarm = isAlarm(h, t % 60);
+        if (alarm) hold = 34; // ca. 4 s
+        render(wordsForTime(h, t % 60), t % 60, 0, alarm);
       }, 120);
     }
 
@@ -256,15 +255,17 @@ const schemes = [
       setActive(null);
       showTime(h, m);
     });
-    root.querySelectorAll<HTMLButtonElement>('[data-alarm]').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        const rule = cfg.alarmRules.find((r) => r.id === btn.dataset.alarm);
-        if (!rule) return;
-        stop();
-        setActive(btn);
-        render(rule.on, null, null, true);
-      }),
-    );
+    const alarmInput = root.querySelector<HTMLInputElement>('[data-alarm-input]');
+    alarmInput?.addEventListener('input', () => {
+      if (alarmInput.value) {
+        const [h, m] = alarmInput.value.split(':').map(Number);
+        alarmAt = h * 60 + m;
+      } else {
+        alarmAt = null;
+      }
+      // Fest gewählte Zeit sofort neu darstellen (live/Zeitraffer laufen ohnehin weiter)
+      if (!timer && shown) showTime(shown.h, shown.m);
+    });
     root.querySelectorAll<HTMLButtonElement>('[data-scheme]').forEach((btn) =>
       btn.addEventListener('click', () => {
         caseEl.style.setProperty('--on', btn.dataset.word!);
@@ -424,9 +425,10 @@ const schemes = [
     border-color: var(--brand-dark);
     color: #fff;
   }
-  .wc__btn--small {
-    font-size: 0.875rem;
-    padding: 0.3em 0.9em;
+  .wc__time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   .wc__time input {
     font: inherit;
