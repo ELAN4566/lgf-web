@@ -91,6 +91,14 @@ sudo cp deploy/nginx/snippets/lgf-security-headers.conf /etc/nginx/snippets/
 sudo cp deploy/nginx/lgf-robots-map.conf /etc/nginx/conf.d/00-lgf-robots-map.conf
 ```
 
+**Logs (alle Server inkl. dmzsrv):** Die Datenschutzerklärung verspricht «nach spätestens
+30 Tagen gelöscht». Wegen `notifempty` reicht `rotate 10` allein nicht – zusätzlich `maxage 30`:
+
+```bash
+sudo sed -i 's/^\(\s*\)rotate 10$/&\n\1maxage 30/' /etc/logrotate.d/nginx
+grep -n "rotate\|maxage" /etc/logrotate.d/nginx
+```
+
 **appsrv:**
 
 ```bash

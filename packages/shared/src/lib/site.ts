@@ -43,7 +43,7 @@ export const company = {
   phone: '+41 32 674 44 22',
   email: 'info@lgf.ch',
   web: 'https://www.lgf.ch',
-  // TODO Erich: UID-Nummer (CHE-xxx.xxx.xxx) und Handelsregister-Eintrag ergänzen
+  // UID (CHE-xxx.xxx.xxx) freiwillig – in CH keine Impressumspflicht; leer = Zeile ausgeblendet
   uid: '',
 } as const;
 

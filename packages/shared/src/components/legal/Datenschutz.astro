@@ -41,7 +41,7 @@ const { site, updated } = Astro.props;
     Protokolldateien: IP-Adresse, Datum und Uhrzeit, aufgerufene Adresse, übertragene Datenmenge,
     Browser-Kennung und die zuvor besuchte Seite. Diese Angaben dienen ausschliesslich dem
     sicheren Betrieb und der Fehlersuche, werden nicht mit anderen Daten zusammengeführt und
-    nach spätestens <!-- TODO Erich: Aufbewahrungsdauer der nginx-Logs prüfen -->30 Tagen
+    nach spätestens <!-- nginx-Logs: logrotate daily, rotate 10, maxage 30 (dmzsrv + Webserver) -->30 Tagen
     gelöscht.
   </p>
 
