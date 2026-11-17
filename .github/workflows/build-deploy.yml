@@ -1,24 +1,28 @@
-# Baut alle Sites und legt das Ergebnis in den Branch "deploy".
-# appsrv holt sich diesen Branch selbst ab (systemd-Timer, siehe deploy/),
+# Baut alle Sites und legt das Ergebnis in einen Build-Branch:
+#   push auf main -> Branch "deploy"       (appsrv, mvssrv: Live-Sites)
+#   push auf test -> Branch "deploy-test"  (mvstestsrv: mvstest/mdstest.lgf.ch)
+# Die Server holen sich ihren Branch selbst ab (systemd-Timer, siehe deploy/),
 # GitHub braucht also keinen Zugang in das eigene Netz.
 
 name: Build & Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main, test]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: deploy
+  group: deploy-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TARGET: ${{ github.ref_name == 'main' && 'deploy' || 'deploy-test' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,15 +46,15 @@ jobs:
               cp -r "$d/dist" "out/$name"
             fi
           done
-          echo "${GITHUB_SHA}" > out/VERSION
+          echo "${GITHUB_REF_NAME} ${GITHUB_SHA}" > out/VERSION
           ls -la out
 
-      - name: In Branch "deploy" veröffentlichen
+      - name: In Build-Branch veröffentlichen
         working-directory: out
         run: |
-          git init -q -b deploy
+          git init -q -b "$TARGET"
           git config user.name  "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
           git add -A
-          git commit -q -m "Deploy ${GITHUB_SHA::7}"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" deploy
+          git commit -q -m "Deploy ${GITHUB_REF_NAME} ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "$TARGET"

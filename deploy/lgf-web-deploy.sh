@@ -1,30 +1,43 @@
 #!/usr/bin/env bash
-# Holt den Branch "deploy" von GitHub und kopiert jede Site nach /var/www/<site>.
-# Läuft auf appsrv als Benutzer "lgfdeploy" per systemd-Timer (lgf-web-deploy.timer).
+# Holt einen Build-Branch von GitHub und kopiert die Sites nach /var/www/<site>.
+# Läuft als Benutzer "lgfdeploy" per systemd-Timer (lgf-web-deploy.timer).
+#
+# Was ein Server ausliefert, steht in /etc/lgf-web-deploy.conf, z. B.:
+#   appsrv:      BRANCH=deploy       SITES="wortuhr"
+#   mvssrv:      BRANCH=deploy       SITES="mvs mds"
+#   mvstestsrv:  BRANCH=deploy-test  SITES="mvs mds"
 #
 # Einmalige Einrichtung: siehe deploy/README-server.md
 
 set -euo pipefail
 
-REPO_DIR=/opt/lgf-web-deploy           # Klon des Branches "deploy"
+CONF=/etc/lgf-web-deploy.conf
+REPO_DIR=/opt/lgf-web-deploy           # Klon des Build-Branches
 WWW_ROOT=/var/www                      # Ziel: /var/www/wortuhr, /var/www/mds, ...
-SITES=(wortuhr)                        # später: (wortuhr mds mvs lgf)
+BRANCH=deploy
+SITES=""
+
+[[ -r "$CONF" ]] && source "$CONF"
+if [[ -z "$SITES" ]]; then
+  echo "FEHLER: SITES ist in $CONF nicht gesetzt" >&2
+  exit 1
+fi
 
 cd "$REPO_DIR"
-git fetch --quiet origin deploy
+git fetch --quiet origin "$BRANCH"
 
 LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/deploy)
-if [[ "$LOCAL" == "$REMOTE" ]]; then
+REMOTE=$(git rev-parse "origin/$BRANCH")
+if [[ "$LOCAL" == "$REMOTE" && "${1:-}" != "--force" ]]; then
   exit 0   # nichts Neues
 fi
 
-git reset --quiet --hard origin/deploy
-echo "Neuer Stand: $(cat VERSION 2>/dev/null || echo "$REMOTE")"
+git reset --quiet --hard "origin/$BRANCH"
+echo "Neuer Stand ($BRANCH): $(cat VERSION 2>/dev/null || echo "$REMOTE")"
 
-for site in "${SITES[@]}"; do
+for site in $SITES; do
   if [[ ! -d "$REPO_DIR/$site" ]]; then
-    echo "WARNUNG: $site fehlt im deploy-Branch, übersprungen" >&2
+    echo "WARNUNG: $site fehlt im Branch $BRANCH, übersprungen" >&2
     continue
   fi
   # --delay-updates: Dateien erst am Schluss austauschen (kein halber Stand online)

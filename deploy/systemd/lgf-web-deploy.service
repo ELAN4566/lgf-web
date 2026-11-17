@@ -1,5 +1,5 @@
 [Unit]
-Description=LGF-Websites aus dem GitHub-Branch "deploy" aktualisieren
+Description=LGF-Websites aus dem GitHub-Build-Branch aktualisieren
 Wants=network-online.target
 After=network-online.target
 
@@ -8,9 +8,10 @@ Type=oneshot
 User=lgfdeploy
 Group=lgfdeploy
 ExecStart=/opt/lgf-web-deploy-bin/lgf-web-deploy.sh
-# Absicherung
+# Absicherung: nur Klon und Website-Ordner beschreibbar.
+# "-" = Ordner darf fehlen (jeder Server hat nur seine Sites).
 NoNewPrivileges=yes
 ProtectSystem=strict
-ReadWritePaths=/opt/lgf-web-deploy /var/www/wortuhr
+ReadWritePaths=/opt/lgf-web-deploy -/var/www/wortuhr -/var/www/mds -/var/www/mvs -/var/www/lgf
 ProtectHome=read-only
 PrivateTmp=yes

@@ -57,12 +57,18 @@ Text in **Markdown** …
 
 Bilder einfach in den Ordner legen (idealerweise ≤ 3000 px breit). Astro erzeugt beim Build
 automatisch verkleinerte WebP-Versionen. Grosse Downloads (Setups, Firmware, Videos) gehören
-nicht ins Repo, sondern auf appsrv nach `/var/www/downloads`.
+nicht ins Repo, sondern auf den jeweiligen Server nach `/var/www/downloads`.
 
 ## Veröffentlichen
 
-`git push` auf `main` → GitHub Action baut alle Sites → Branch `deploy` → appsrv holt ihn
-spätestens nach 5 Minuten. Einrichtung der Server: [deploy/README-server.md](deploy/README-server.md).
+| Git-Branch | Build-Branch | Server holt ab | Adressen |
+|---|---|---|---|
+| `main` | `deploy` | appsrv, mvssrv | wortuhr.lgf.ch, mvs.lgf.ch, mds.lgf.ch |
+| `test` | `deploy-test` | mvstestsrv | mvstest.lgf.ch, mdstest.lgf.ch |
+
+`git push` → GitHub Action baut alle Sites → Build-Branch → jeder Server holt ihn spätestens
+nach 5 Minuten und kopiert nur seine Sites (`/etc/lgf-web-deploy.conf`).
+Einrichtung der Server: [deploy/README-server.md](deploy/README-server.md).
 
 ## MDS-Produktkatalog
 
@@ -74,9 +80,10 @@ Die Artikelnummer ist auch der spätere Schlüssel für Preise/Lager aus der Dat
 ## Umstellung MDS/MVS: zu klären
 
 - `/MdsClient` und `/MvsClient/` (ClickOnce) sowie `/media/files/*.pdf` müssen unter denselben
-  Adressen erreichbar bleiben – siehe `deploy/nginx/appsrv-mds.lgf.ch.conf` / `appsrv-mvs.lgf.ch.conf`.
-- mvs.lgf.ch bedient evtl. weitere MVS-Serverdienste (Web-Ansicht, Mobile-App) – vor der
-  Umstellung Pfade erheben.
+  Adressen erreichbar bleiben – siehe `deploy/nginx/mds.lgf.ch.conf` / `mvs.lgf.ch.conf`.
+- mvs.lgf.ch bedient auf mvssrv weitere MVS-Serverdienste (Web-Ansicht, Mobile-App) – vor der
+  Umstellung die bestehende nginx-Konfiguration auf mvssrv/mvstestsrv sichern und deren Pfade
+  übernehmen.
 - Alte `.html`-Adressen werden per 301 auf die neuen Seiten umgeleitet (in den nginx-Vorlagen).
 
 ## Wortuhr-Demo

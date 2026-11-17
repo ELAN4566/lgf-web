@@ -1,0 +1,14 @@
+# /etc/lgf-web-deploy.conf – legt fest, was dieser Server ausliefert.
+# Nur EINE Variante pro Server aktiv lassen.
+
+# appsrv (wortuhr.lgf.ch, später evtl. www.lgf.ch)
+BRANCH=deploy
+SITES="wortuhr"
+
+# mvssrv (mvs.lgf.ch, mds.lgf.ch)
+#BRANCH=deploy
+#SITES="mvs mds"
+
+# mvstestsrv (mvstest.lgf.ch, mdstest.lgf.ch) – Stand des Git-Branches "test"
+#BRANCH=deploy-test
+#SITES="mvs mds"
